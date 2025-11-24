@@ -1,0 +1,105 @@
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
+
+public class MovePlate : MonoBehaviour
+{
+    public GameObject gameController;
+
+    GameObject referencePiece = null;
+
+    private int targetX;
+    private int targetY;
+
+    public bool isAttackMove = false;
+
+    public void Start()
+    {
+        if(isAttackMove)
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+        }
+    }
+
+    public void OnMouseDown()
+    {
+        gameController = GameObject.FindGameObjectWithTag("GameController");
+        ChessGame chessGame = gameController.GetComponent<ChessGame>();
+
+        if (isAttackMove)
+        {
+            GameObject targetPiece = gameController.GetComponent<ChessGame>().GetPosition(targetX, targetY);
+            if(targetPiece != null)
+            {
+                ChessPiece targetPieceScript = targetPiece.GetComponent<ChessPiece>();
+
+                if(chessGame.puzzleMode)
+                {
+                    if(targetPieceScript.name.Contains("queen"))
+                    {
+                        chessGame.SavePawnPosition(referencePiece);
+                        SceneManager.LoadScene("QueenPuzzle");
+                    }
+                    else if (targetPieceScript.name.Contains("rook"))
+                    {
+                        chessGame.SavePawnPosition(referencePiece);
+                        SceneManager.LoadScene("RookPuzzle");
+                    }
+                    else if (targetPieceScript.name.Contains("bishop"))
+                    {
+                        chessGame.SavePawnPosition(referencePiece);
+                        SceneManager.LoadScene("BishopPuzzle");
+                    }
+                    else if (targetPieceScript.name.Contains("knight") &&
+                             !targetPiece.CompareTag("EnemyKnight"))
+                    {
+                        chessGame.SavePawnPosition(referencePiece);
+                        SceneManager.LoadScene("KnightPuzzle");
+                    }
+                    else if (targetPieceScript.name.Contains("king"))
+                    {
+                        chessGame.SavePawnPosition(referencePiece);
+                        SceneManager.LoadScene("KingPuzzle");
+                    }
+                }
+            }
+            Destroy(targetPiece);
+        }
+
+        gameController.GetComponent<ChessGame>().SetPositionEmpty(referencePiece.GetComponent<ChessPiece>().xBoard,
+        referencePiece.GetComponent<ChessPiece>().yBoard);
+
+        referencePiece.GetComponent<ChessPiece>().SetXBoard(targetX);
+        referencePiece.GetComponent<ChessPiece>().SetYBoard(targetY);
+        referencePiece.GetComponent<ChessPiece>().SetCoords();
+
+        gameController.GetComponent<ChessGame>().SetPosition(referencePiece);
+        referencePiece.GetComponent<ChessPiece>().DestroyMovePlates();
+
+        ChessPiece movedPiece = referencePiece.GetComponent<ChessPiece>();
+        if (movedPiece.name.Equals("white_pawn"))
+        {
+            gameController.GetComponent<ChessGame>().TransitionToPuzzleMode(movedPiece.gameObject);
+        }
+        else
+        {
+            gameController.GetComponent<ChessGame>().SwitchTurn();
+        }
+    }
+
+    public void SetCoords(int x, int y)
+    {
+        targetX = x;
+        targetY = y;
+    }
+
+    public void SetReference(GameObject obj)
+    {
+        referencePiece = obj;
+    }
+
+    public GameObject GetReference()
+    {
+        return referencePiece;
+    }
+}
