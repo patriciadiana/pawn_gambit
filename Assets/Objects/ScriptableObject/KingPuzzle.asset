@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8da8343f7a601434499e1b86499c771e, type: 3}
-  m_Name: QueenPuzzleConfig
+  m_Name: KingPuzzle
   m_EditorClassIdentifier: Assembly-CSharp::PuzzleConfig
-  puzzleName: QueenPuzzle
+  puzzleName: KingtPuzzle
   initialSceneName: ChessGame
-  nextPieceType: black_rook
-  nextPiecePosition: {x: 5, y: 4}
-  rewardType: queen
+  nextPieceType: 
+  nextPiecePosition: {x: 0, y: 0}
+  rewardType: king
   hasTimeLimit: 1
   timeLimitinSeconds: 100

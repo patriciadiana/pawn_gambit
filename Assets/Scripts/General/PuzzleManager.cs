@@ -24,9 +24,15 @@ public class PuzzleManager : MonoBehaviour
     public void CompletePuzzle(string name, string nextPiece, Vector2Int pos, string reward)
     {
         solvedPuzzles.Add(name);
-        rewardPieces.Add(reward);
-        ChessGame.Instance.QueuePawnRestore(nextPiece, pos);
+        if(!string.IsNullOrEmpty(reward))
+        {
+            rewardPieces.Add(reward);
+        }
 
+        if(!string.IsNullOrEmpty(nextPiece))
+        {
+            ChessGame.Instance.QueuePawnRestore(nextPiece, pos);
+        }
         string rewardsList = string.Join(", ", rewardPieces);
         Debug.Log($"Puzzle Completed! Rewards: {rewardsList}</color>");
 
@@ -37,7 +43,12 @@ public class PuzzleManager : MonoBehaviour
     {
         string rewardsList = string.Join(", ", rewardPieces);
         Debug.Log($"Puzzle Completed! Rewards: {rewardsList}</color>");
-        ChessGame.Instance.QueuePawnRestore(nextPiece, pos);
+
+        if (!string.IsNullOrEmpty(nextPiece))
+        {
+            ChessGame.Instance.QueuePawnRestore(nextPiece, pos);
+        }
+
         SceneManager.LoadScene("ChessGame");
     }
 }
