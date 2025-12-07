@@ -5,6 +5,10 @@ using UnityEngine.UIElements;
 
 public class ChessGame : MonoBehaviour
 {
+    public delegate void MoveCompleted(ChessPiece piece, Vector2Int from, Vector2Int to);
+    public event MoveCompleted OnMoveCompleted;
+    public bool suppressCallback = false;
+
     [Header("Prefabs")]
     [SerializeField] public GameObject chessPiecePrefab;
 
@@ -15,9 +19,9 @@ public class ChessGame : MonoBehaviour
     public static ChessGame Instance;
 
     private bool hasTransitionedToPuzzle = false;
+    public bool puzzleMode = false;
 
     private string currentPlayer = "white";
-    public bool puzzleMode = false;
 
     private bool shouldRestorePawnAfterLoad = false;
     private string nextPieceToSpawn = null;
@@ -78,9 +82,13 @@ public class ChessGame : MonoBehaviour
     {
         SpawnPieces();
     }
-
     public void SwitchTurn()
     {
+        if (puzzleMode)
+        {
+            return;
+        }
+
         currentPlayer = (currentPlayer == "white") ? "black" : "white";
     }
     public string GetCurrentPlayer()
@@ -131,8 +139,25 @@ public class ChessGame : MonoBehaviour
     {
         ChessPiece pieceScript = piece.GetComponent<ChessPiece>();
 
+        Vector2Int from = pieceScript.lastPosition;
+        Vector2Int to = new Vector2Int(pieceScript.xBoard, pieceScript.yBoard);
+
         boardPositions[pieceScript.xBoard, pieceScript.yBoard] = piece;
+
+        // Don't trigger callback during spawn
+        if (suppressCallback)
+            return;
+
+        // Only trigger callback if actual movement happened
+        if (from != to && OnMoveCompleted != null)
+        {
+            OnMoveCompleted(pieceScript, from, to);
+        }
+
+        // Update lastPosition AFTER placing
+        pieceScript.lastPosition = to;
     }
+
 
     public void SetPosition(GameObject piece, int x, int y)
     {
@@ -141,8 +166,20 @@ public class ChessGame : MonoBehaviour
 
     public void SetPositionEmpty(int x, int y)
     {
+        GameObject pieceObj = GetPosition(x, y);
+
+        if (pieceObj != null)
+        {
+            ChessPiece cp = pieceObj.GetComponent<ChessPiece>();
+            if (cp != null)
+            {
+                cp.lastPosition = new Vector2Int(x, y);
+            }
+        }
+
         boardPositions[x, y] = null;
     }
+
 
     public GameObject GetPosition(int x, int y)
     {

@@ -25,6 +25,7 @@ public class MovePlate : MonoBehaviour
     {
         gameController = GameObject.FindGameObjectWithTag("GameController");
         ChessGame chessGame = gameController.GetComponent<ChessGame>();
+        ChessPiece pieceScript = referencePiece.GetComponent<ChessPiece>();
 
         if (isAttackMove)
         {
@@ -38,7 +39,8 @@ public class MovePlate : MonoBehaviour
                     if(targetPieceScript.name.Contains("queen"))
                     {
                         chessGame.SavePawnPosition(referencePiece);
-                        SceneManager.LoadScene("QueenPuzzle");
+                        //SceneManager.LoadScene("QueenPuzzle");
+                        SceneManager.LoadScene("KingPuzzle");
                     }
                     else if (targetPieceScript.name.Contains("rook"))
                     {
@@ -65,16 +67,14 @@ public class MovePlate : MonoBehaviour
             }
             Destroy(targetPiece);
         }
+        gameController.GetComponent<ChessGame>().SetPositionEmpty(pieceScript.xBoard, pieceScript.yBoard);
 
-        gameController.GetComponent<ChessGame>().SetPositionEmpty(referencePiece.GetComponent<ChessPiece>().xBoard,
-        referencePiece.GetComponent<ChessPiece>().yBoard);
-
-        referencePiece.GetComponent<ChessPiece>().SetXBoard(targetX);
-        referencePiece.GetComponent<ChessPiece>().SetYBoard(targetY);
-        referencePiece.GetComponent<ChessPiece>().SetCoords();
+        pieceScript.SetXBoard(targetX);
+        pieceScript.SetYBoard(targetY);
+        pieceScript.SetCoords();
 
         gameController.GetComponent<ChessGame>().SetPosition(referencePiece);
-        referencePiece.GetComponent<ChessPiece>().DestroyMovePlates();
+        pieceScript.DestroyMovePlates();
 
         ChessPiece movedPiece = referencePiece.GetComponent<ChessPiece>();
         if (movedPiece.name.Equals("white_pawn"))

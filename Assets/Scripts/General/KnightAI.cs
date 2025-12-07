@@ -6,7 +6,7 @@ public class KnightAI : MonoBehaviour
     private ChessPiece piece;
     private ChessGame game;
 
-    public float moveInterval = 3f;
+    public float moveInterval = 5f;
     public GameObject targetPawn;
 
     private void Start()
