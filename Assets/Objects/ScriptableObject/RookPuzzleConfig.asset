@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PuzzleConfig
   puzzleName: RookPuzzle
   initialSceneName: ChessGame
-  nextPieceType: black_bishop
+  nextPieceType: white_bishop
   nextPiecePosition: {x: 6, y: 7}
   rewardType: rook
   hasTimeLimit: 1

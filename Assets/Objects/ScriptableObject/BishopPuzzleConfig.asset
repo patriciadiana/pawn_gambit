@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PuzzleConfig
   puzzleName: BishopPuzzle
   initialSceneName: ChessGame
-  nextPieceType: black_knight
+  nextPieceType: white_knight
   nextPiecePosition: {x: 6, y: 4}
   rewardType: bishop
   hasTimeLimit: 1
-  timeLimitinSeconds: 1
+  timeLimitinSeconds: 100

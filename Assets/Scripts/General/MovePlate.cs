@@ -67,23 +67,23 @@ public class MovePlate : MonoBehaviour
             }
             Destroy(targetPiece);
         }
-        gameController.GetComponent<ChessGame>().SetPositionEmpty(pieceScript.xBoard, pieceScript.yBoard);
+        chessGame.SetPositionEmpty(pieceScript.xBoard, pieceScript.yBoard);
 
         pieceScript.SetXBoard(targetX);
         pieceScript.SetYBoard(targetY);
         pieceScript.SetCoords();
 
-        gameController.GetComponent<ChessGame>().SetPosition(referencePiece);
+        chessGame.SetPosition(referencePiece);
         pieceScript.DestroyMovePlates();
 
         ChessPiece movedPiece = referencePiece.GetComponent<ChessPiece>();
-        if (movedPiece.name.Equals("white_pawn"))
+        if (movedPiece.name.Equals("white_pawn") && chessGame.isMidgameMode == false)
         {
-            gameController.GetComponent<ChessGame>().TransitionToPuzzleMode(movedPiece.gameObject);
+            chessGame.TransitionToPuzzleMode(movedPiece.gameObject);
         }
-        else
+        else if(chessGame.isMidgameMode == false)
         {
-            gameController.GetComponent<ChessGame>().SwitchTurn();
+            chessGame.SwitchTurn();
         }
     }
 

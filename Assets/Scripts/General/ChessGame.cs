@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -20,6 +21,7 @@ public class ChessGame : MonoBehaviour
 
     private bool hasTransitionedToPuzzle = false;
     public bool puzzleMode = false;
+    public bool isMidgameMode = false;
 
     private string currentPlayer = "white";
 
@@ -40,13 +42,33 @@ public class ChessGame : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (shouldRestorePawnAfterLoad && scene.name == "ChessGame")
+        if (scene.name != "ChessGame")
+            return;
+
+        if (PuzzleManager.Instance != null &&
+        PuzzleManager.Instance.kingPuzzleCompleted)
+        {
+            PuzzleManager.Instance.kingPuzzleCompleted = false;
+
+            ChessGame.Instance.ResetForMidgame();
+            MidgameGenerator.Instance.GenerateMidgame();
+
+            string stockfishPath = Application.dataPath + "/StreamingAssets/stockfish/stockfish-windows-x86-64-avx2.exe";
+            StockfishManager.Instance.StartEngine(stockfishPath);
+        }
+
+
+        if (shouldRestorePawnAfterLoad)
         {
             RestorePawn();
 
             if (!string.IsNullOrEmpty(nextPieceToSpawn))
             {
-                StartCoroutine(SpawnPieceAfterTime(nextPieceToSpawn, nextPiecePosition.x, nextPiecePosition.y));
+                StartCoroutine(
+                    SpawnPieceAfterTime(
+                        nextPieceToSpawn,
+                        nextPiecePosition.x,
+                        nextPiecePosition.y));
             }
 
             shouldRestorePawnAfterLoad = false;
@@ -89,11 +111,25 @@ public class ChessGame : MonoBehaviour
             return;
         }
 
+        string oldTurn = currentPlayer;
         currentPlayer = (currentPlayer == "white") ? "black" : "white";
     }
     public string GetCurrentPlayer()
     {
         return currentPlayer;
+    }
+
+    public void ResetForMidgame()
+    {
+        puzzleMode = false;
+        isMidgameMode = true;
+        suppressCallback = true;
+
+        for (int x = 0; x < 8; x++)
+            for (int y = 0; y < 8; y++)
+                boardPositions[x, y] = null;
+
+        suppressCallback = false;
     }
 
     public void SpawnPieces()
@@ -120,6 +156,104 @@ public class ChessGame : MonoBehaviour
             SetPosition(whitePieces[i]);
         }
     }
+
+    public static string GenerateFEN()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        bool whiteKing = false;
+        bool blackKing = false;
+        bool whiteRookA = false, whiteRookH = false;
+        bool blackRookA = false, blackRookH = false;
+
+        // 1. Piece placement
+        for (int y = 7; y >= 0; y--)
+        {
+            int emptyCount = 0;
+
+            for (int x = 0; x < 8; x++)
+            {
+                GameObject piece = ChessGame.Instance.GetPosition(x, y);
+
+                if (piece == null)
+                {
+                    emptyCount++;
+                    continue;
+                }
+
+                if (emptyCount > 0)
+                {
+                    sb.Append(emptyCount);
+                    emptyCount = 0;
+                }
+
+                string name = piece.name.ToLower();
+                char fenChar;
+
+                if (name.Contains("pawn")) fenChar = 'p';
+                else if (name.Contains("rook")) fenChar = 'r';
+                else if (name.Contains("knight")) fenChar = 'n';
+                else if (name.Contains("bishop")) fenChar = 'b';
+                else if (name.Contains("queen")) fenChar = 'q';
+                else if (name.Contains("king")) fenChar = 'k';
+                else continue;
+
+                bool isWhite = name.StartsWith("white");
+                if (isWhite) fenChar = char.ToUpper(fenChar);
+
+                // Track kings
+                if (fenChar == 'K') whiteKing = true;
+                if (fenChar == 'k') blackKing = true;
+
+                // Track rooks for castling
+                if (fenChar == 'R' && y == 0 && x == 0) whiteRookA = true;
+                if (fenChar == 'R' && y == 0 && x == 7) whiteRookH = true;
+                if (fenChar == 'r' && y == 7 && x == 0) blackRookA = true;
+                if (fenChar == 'r' && y == 7 && x == 7) blackRookH = true;
+
+                sb.Append(fenChar);
+            }
+
+            if (emptyCount > 0)
+                sb.Append(emptyCount);
+
+            if (y > 0)
+                sb.Append('/');
+        }
+
+        // Sanity check (VERY IMPORTANT)
+        if (!whiteKing || !blackKing)
+        {
+            Debug.LogError("Invalid FEN: missing king!");
+        }
+
+        // 2. Active color
+        sb.Append(' ');
+        sb.Append(ChessGame.Instance.GetCurrentPlayer() == "white" ? 'w' : 'b');
+
+        // 3. Castling rights
+        sb.Append(' ');
+        string castling = "";
+
+        if (whiteRookH && whiteKing) castling += "K";
+        if (whiteRookA && whiteKing) castling += "Q";
+        if (blackRookH && blackKing) castling += "k";
+        if (blackRookA && blackKing) castling += "q";
+
+        sb.Append(castling == "" ? "-" : castling);
+
+        // 4. En passant
+        sb.Append(" -");
+
+        // 5. Halfmove clock
+        sb.Append(" 0");
+
+        // 6. Fullmove number
+        sb.Append(" 1");
+
+        return sb.ToString();
+    }
+
 
     public GameObject CreatePiece(string pieceName, int x, int y)
     {
@@ -179,8 +313,6 @@ public class ChessGame : MonoBehaviour
 
         boardPositions[x, y] = null;
     }
-
-
     public GameObject GetPosition(int x, int y)
     {
         return boardPositions[x, y];
@@ -224,7 +356,7 @@ public class ChessGame : MonoBehaviour
 
         SpawnRandomAIKnights(3, pawn);
 
-        StartCoroutine(SpawnPieceAfterTime("black_queen", 0, 7));
+        StartCoroutine(SpawnPieceAfterTime("white_queen", 0, 7));
     }
 
     public void RestorePawn()

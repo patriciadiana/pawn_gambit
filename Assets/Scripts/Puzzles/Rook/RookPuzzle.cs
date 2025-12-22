@@ -9,10 +9,10 @@ public class RookPuzzle : MonoBehaviour
     public Transform[] crates;
     public Transform[] goals;
 
-    private float tileSize = BoardConfig.TileSize;
-    private Vector2 boardOffset = new Vector2(-2.3f, -2.3f);
-    private int boardWidth = 8;
-    private int boardHeight = 8;
+    //private float tileSize = BoardConfig.TileSize;
+    //private Vector2 boardOffset = new Vector2(-2.3f, -2.3f);
+    //private int boardWidth = 8;
+    //private int boardHeight = 8;
 
     private bool isMoving = false;
 

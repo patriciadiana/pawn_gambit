@@ -25,16 +25,13 @@ public class ChessPiece : MonoBehaviour
     public void Activate()
     {
         controller = GameObject.FindGameObjectWithTag("GameController");
-
         SetCoords();
-
         AssignSprite(this.name);
     }
 
     private void AssignSprite(string name)
     {
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
-
         switch (name)
         {
             case "black_queen": renderer.sprite = black_queen; player = "black"; break;
@@ -83,7 +80,7 @@ public class ChessPiece : MonoBehaviour
 
     public void GenerateMovePlates()
     {
-        switch(this.name)
+        switch (this.name)
         {
             case "black_queen":
             case "white_queen":
@@ -95,7 +92,7 @@ public class ChessPiece : MonoBehaviour
                 LineMovePlate(-1, -1);
                 LineMovePlate(-1, 1);
                 LineMovePlate(1, -1);
-            break;
+                break;
 
             case "black_knight":
             case "white_knight":
@@ -104,7 +101,7 @@ public class ChessPiece : MonoBehaviour
 
             case "black_bishop":
             case "white_bishop":
-                LineMovePlate(1,1);
+                LineMovePlate(1, 1);
                 LineMovePlate(1, -1);
                 LineMovePlate(-1, 1);
                 LineMovePlate(-1, -1);
@@ -136,7 +133,6 @@ public class ChessPiece : MonoBehaviour
     public void LineMovePlate(int xIncrement, int yIncrement)
     {
         ChessGame chessGameScript = controller.GetComponent<ChessGame>();
-
         int x = xBoard + xIncrement;
         int y = yBoard + yIncrement;
 
@@ -147,7 +143,8 @@ public class ChessPiece : MonoBehaviour
             y += yIncrement;
         }
 
-        if (chessGameScript.IsPositionOnBoard(x, y) && chessGameScript.GetPosition(x, y).GetComponent<ChessPiece>().player != player)
+        if (chessGameScript.IsPositionOnBoard(x, y) &&
+            chessGameScript.GetPosition(x, y).GetComponent<ChessPiece>().player != player)
         {
             MovePlateAttackSpawn(x, y);
         }
@@ -176,10 +173,11 @@ public class ChessPiece : MonoBehaviour
         PointMovePlate(xBoard + 1, yBoard - 1);
         PointMovePlate(xBoard + 1, yBoard + 1);
     }
+
     public void PointMovePlate(int x, int y)
     {
         ChessGame chessGameScript = controller.GetComponent<ChessGame>();
-        if(chessGameScript.IsPositionOnBoard(x,y))
+        if (chessGameScript.IsPositionOnBoard(x, y))
         {
             GameObject chessPiecePosition = chessGameScript.GetPosition(x, y);
 
@@ -187,7 +185,7 @@ public class ChessPiece : MonoBehaviour
             {
                 MovePlateSpawn(x, y);
             }
-            else if(chessPiecePosition.GetComponent<ChessPiece>().player != player)
+            else if (chessPiecePosition.GetComponent<ChessPiece>().player != player)
             {
                 MovePlateAttackSpawn(x, y);
             }
@@ -197,68 +195,35 @@ public class ChessPiece : MonoBehaviour
     public void PawnMovePlate(int x, int y)
     {
         ChessGame chessGameScript = controller.GetComponent<ChessGame>();
-
         bool puzzleMode = chessGameScript.puzzleMode;
 
         if (puzzleMode)
         {
-            /* Left movement */
+            // Left movement
             if (chessGameScript.IsPositionOnBoard(xBoard - 1, yBoard) &&
                 chessGameScript.GetPosition(xBoard - 1, yBoard) == null)
-            {
                 MovePlateSpawn(xBoard - 1, yBoard);
-            }
 
-            /* Right movement */
+            // Right movement
             if (chessGameScript.IsPositionOnBoard(xBoard + 1, yBoard) &&
                 chessGameScript.GetPosition(xBoard + 1, yBoard) == null)
-            {
                 MovePlateSpawn(xBoard + 1, yBoard);
-            }
 
-            /* Upward movement */
+            // Upward movement
             if (chessGameScript.IsPositionOnBoard(xBoard, yBoard + 1) &&
                 chessGameScript.GetPosition(xBoard, yBoard + 1) == null)
-            {
                 MovePlateSpawn(xBoard, yBoard + 1);
-            }
 
-            /* Downward movement */
+            // Downward movement
             if (chessGameScript.IsPositionOnBoard(xBoard, yBoard - 1) &&
                 chessGameScript.GetPosition(xBoard, yBoard - 1) == null)
-            {
                 MovePlateSpawn(xBoard, yBoard - 1);
-            }
 
-            /* Attack diagonally upward */
-            if (chessGameScript.IsPositionOnBoard(xBoard + 1, yBoard + 1) &&
-                chessGameScript.GetPosition(xBoard + 1, yBoard + 1) != null &&
-                chessGameScript.GetPosition(xBoard + 1, yBoard + 1).GetComponent<ChessPiece>().player != player)
-            {
-                MovePlateAttackSpawn(xBoard + 1, yBoard + 1);
-            }
-
-            if (chessGameScript.IsPositionOnBoard(xBoard - 1, yBoard + 1) &&
-                chessGameScript.GetPosition(xBoard - 1, yBoard + 1) != null &&
-                chessGameScript.GetPosition(xBoard - 1, yBoard + 1).GetComponent<ChessPiece>().player != player)
-            {
-                MovePlateAttackSpawn(xBoard - 1, yBoard + 1);
-            }
-
-            /* Attack diagonally downward */
-            if (chessGameScript.IsPositionOnBoard(xBoard + 1, yBoard - 1) &&
-                chessGameScript.GetPosition(xBoard + 1, yBoard - 1) != null &&
-                chessGameScript.GetPosition(xBoard + 1, yBoard - 1).GetComponent<ChessPiece>().player != player)
-            {
-                MovePlateAttackSpawn(xBoard + 1, yBoard - 1);
-            }
-
-            if (chessGameScript.IsPositionOnBoard(xBoard - 1, yBoard - 1) &&
-                chessGameScript.GetPosition(xBoard - 1, yBoard - 1) != null &&
-                chessGameScript.GetPosition(xBoard - 1, yBoard - 1).GetComponent<ChessPiece>().player != player)
-            {
-                MovePlateAttackSpawn(xBoard - 1, yBoard - 1);
-            }
+            // Attack diagonals
+            TryPawnAttack(xBoard + 1, yBoard + 1, chessGameScript);
+            TryPawnAttack(xBoard - 1, yBoard + 1, chessGameScript);
+            TryPawnAttack(xBoard + 1, yBoard - 1, chessGameScript);
+            TryPawnAttack(xBoard - 1, yBoard - 1, chessGameScript);
         }
         else
         {
@@ -268,34 +233,33 @@ public class ChessPiece : MonoBehaviour
                 {
                     MovePlateSpawn(x, y);
 
-                    if (player == "white" && yBoard == 1)
-                    {
-                        if (chessGameScript.GetPosition(x, y + 1) == null)
-                        {
-                            MovePlateSpawn(x, y + 1);
-                        }
-                    }
-                    else if (player == "black" && yBoard == 6)
-                    {
-                        if (chessGameScript.GetPosition(x, y - 1) == null)
-                        {
-                            MovePlateSpawn(x, y - 1);
-                        }
-                    }
+                    if (player == "white" && yBoard == 1 &&
+                        chessGameScript.GetPosition(x, y + 1) == null)
+                        MovePlateSpawn(x, y + 1);
+                    else if (player == "black" && yBoard == 6 &&
+                             chessGameScript.GetPosition(x, y - 1) == null)
+                        MovePlateSpawn(x, y - 1);
                 }
 
-                if (chessGameScript.IsPositionOnBoard(x + 1, y) && chessGameScript.GetPosition(x + 1, y) != null
-                    && chessGameScript.GetPosition(x + 1, y).GetComponent<ChessPiece>().player != player)
-                {
-                    MovePlateAttackSpawn(x + 1, y);
-                }
-
-                if (chessGameScript.IsPositionOnBoard(x - 1, y) && chessGameScript.GetPosition(x - 1, y) != null
-                    && chessGameScript.GetPosition(x - 1, y).GetComponent<ChessPiece>().player != player)
-                {
-                    MovePlateAttackSpawn(x - 1, y);
-                }
+                TryPawnAttack(x + 1, y, chessGameScript);
+                TryPawnAttack(x - 1, y, chessGameScript);
             }
+        }
+    }
+
+    private void TryPawnAttack(int x, int y, ChessGame game)
+    {
+        if (!game.IsPositionOnBoard(x, y)) return;
+
+        GameObject target = game.GetPosition(x, y);
+        if (target == null) return;
+
+        ChessPiece targetPiece = target.GetComponent<ChessPiece>();
+
+        // Pawn attack rule
+        if (!game.isMidgameMode || targetPiece.player != player)
+        {
+            MovePlateAttackSpawn(x, y);
         }
     }
 
@@ -323,6 +287,23 @@ public class ChessPiece : MonoBehaviour
         movePlateScript.isAttackMove = true;
         movePlateScript.SetReference(gameObject);
         movePlateScript.SetCoords(matrixX, matrixY);
+    }
+
+    public string GetPlayer()
+    {
+        return player;
+    }
+
+    public int GetPieceType()
+    {
+        string pieceName = this.name.ToLower();
+        if (pieceName.Contains("pawn")) return 0;
+        if (pieceName.Contains("knight")) return 1;
+        if (pieceName.Contains("bishop")) return 2;
+        if (pieceName.Contains("rook")) return 3;
+        if (pieceName.Contains("queen")) return 4;
+        if (pieceName.Contains("king")) return 5;
+        return -1;
     }
 
     public void SetXBoard(int x)

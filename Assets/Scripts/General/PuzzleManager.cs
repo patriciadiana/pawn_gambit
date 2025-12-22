@@ -9,6 +9,8 @@ public class PuzzleManager : MonoBehaviour
 
     public List<string> rewardPieces = new();
 
+    public bool kingPuzzleCompleted = false;
+
     void Awake()
     {
         if (Instance == null)
@@ -29,10 +31,11 @@ public class PuzzleManager : MonoBehaviour
             rewardPieces.Add(reward);
         }
 
-        if(!string.IsNullOrEmpty(nextPiece))
+        if(!string.IsNullOrEmpty(nextPiece) && kingPuzzleCompleted == false)
         {
             ChessGame.Instance.QueuePawnRestore(nextPiece, pos);
         }
+
         string rewardsList = string.Join(", ", rewardPieces);
         Debug.Log($"Puzzle Completed! Rewards: {rewardsList}</color>");
 
@@ -44,7 +47,7 @@ public class PuzzleManager : MonoBehaviour
         string rewardsList = string.Join(", ", rewardPieces);
         Debug.Log($"Puzzle Completed! Rewards: {rewardsList}</color>");
 
-        if (!string.IsNullOrEmpty(nextPiece))
+        if (!string.IsNullOrEmpty(nextPiece) && kingPuzzleCompleted == false)
         {
             ChessGame.Instance.QueuePawnRestore(nextPiece, pos);
         }

@@ -46,7 +46,7 @@ public class QueensProblem : MonoBehaviour
 
             if (existingPiece == null)
             {
-                ChessGame.Instance.SpawnChessPiece("black_queen", boardPos.x, boardPos.y);
+                ChessGame.Instance.SpawnChessPiece("white_queen", boardPos.x, boardPos.y);
             }
             else if (existingPiece != null && existingPiece.name.Contains("queen"))
             {
