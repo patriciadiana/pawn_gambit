@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PuzzleConfig
   puzzleName: KnightPuzzle
   initialSceneName: ChessGame
-  nextPieceType: black_king
+  nextPieceType: white_king
   nextPiecePosition: {x: 5, y: 4}
   rewardType: knight
   hasTimeLimit: 1

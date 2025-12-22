@@ -41,6 +41,8 @@ public class KingPuzzles : MonoBehaviour
         {
             puzzleCompleted = true;
 
+            PuzzleManager.Instance.kingPuzzleCompleted = true;
+
             PuzzleManager.Instance.CompletePuzzle(
                 puzzleConfig.initialSceneName,
                 puzzleConfig.nextPieceType,
@@ -130,7 +132,6 @@ public class KingPuzzles : MonoBehaviour
         }
 
         spawnedPieces.Clear();
-        Debug.Log("Cleared all spawned pieces");
     }
 
     private void OnPieceMoved(ChessPiece piece, Vector2Int from, Vector2Int to)
@@ -139,7 +140,6 @@ public class KingPuzzles : MonoBehaviour
 
         if (piece.name.Contains("white_bishop") && to == firstPuzzleTarget)
         {
-            Debug.Log("Correct: bishop moved to (7,5).");
             firstPuzzleFinished = true;
             SpawnSecondPuzzle();
         }
