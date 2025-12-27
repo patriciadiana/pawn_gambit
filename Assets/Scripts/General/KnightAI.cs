@@ -82,6 +82,7 @@ public class KnightAI : MonoBehaviour
             if (targetAtPos == targetPawn)
             {
                 Destroy(targetPawn);
+                ChessGame.Instance.HandleGameOver();
             }
             Destroy(targetAtPos);
         }

@@ -18,4 +18,4 @@ MonoBehaviour:
   nextPiecePosition: {x: 6, y: 7}
   rewardType: rook
   hasTimeLimit: 1
-  timeLimitinSeconds: 100
+  timeLimitinSeconds: 20

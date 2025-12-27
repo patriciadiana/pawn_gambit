@@ -33,6 +33,8 @@ public class BishopMovement : MonoBehaviour
         {
             puzzleCompleted = true;
 
+            PuzzlePiecesDisplay.Instance.UnlockPiece("bishop");
+
             PuzzleManager.Instance.CompletePuzzle(
                 puzzleConfig.initialSceneName,
                 puzzleConfig.nextPieceType,
@@ -46,9 +48,12 @@ public class BishopMovement : MonoBehaviour
         if (puzzleConfig.hasTimeLimit && !puzzleWon)
         {
             timer -= Time.deltaTime;
+            TimerUI.Instance.DisplayTime(timer);
 
             if (timer <= 0f)
             {
+                TimerUI.Instance.Hide();
+
                 PuzzleManager.Instance.FailPuzzle(
                     puzzleConfig.puzzleName,
                     puzzleConfig.nextPieceType,
