@@ -18,4 +18,4 @@ MonoBehaviour:
   nextPiecePosition: {x: 5, y: 4}
   rewardType: knight
   hasTimeLimit: 1
-  timeLimitinSeconds: 100
+  timeLimitinSeconds: 30

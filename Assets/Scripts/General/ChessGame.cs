@@ -13,6 +13,9 @@ public class ChessGame : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] public GameObject chessPiecePrefab;
 
+    [Header("Game Over")]
+    [SerializeField] private GameOverScreen gameOver;
+
     private GameObject[,] boardPositions = new GameObject[8, 8];
     private GameObject[] blackPieces = new GameObject[16];
     private GameObject[] whitePieces = new GameObject[16];
@@ -398,6 +401,11 @@ public class ChessGame : MonoBehaviour
         ai.targetPawn = pawnTarget;
         knight.tag = "EnemyKnight";
         return knight;
+    }
+
+    public void HandleGameOver()
+    {
+        gameOver.Setup();
     }
 
     public void SpawnRandomAIKnights(int count, GameObject pawnTarget)

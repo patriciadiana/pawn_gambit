@@ -42,8 +42,12 @@ public class RookPuzzle : MonoBehaviour
         if (puzzleConfig.hasTimeLimit)
         {
             timer -= Time.deltaTime;
+            TimerUI.Instance.DisplayTime(timer);
+
             if (timer <= 0f)
             {
+                TimerUI.Instance.Hide();
+
                 PuzzleManager.Instance.FailPuzzle(
                     puzzleConfig.puzzleName,
                     puzzleConfig.nextPieceType,
@@ -134,6 +138,8 @@ public class RookPuzzle : MonoBehaviour
 
         if (correct == goals.Length)
         {
+            PuzzlePiecesDisplay.Instance.UnlockPiece("rook");
+
             PuzzleManager.Instance.CompletePuzzle(
                 puzzleConfig.initialSceneName,
                 puzzleConfig.nextPieceType,

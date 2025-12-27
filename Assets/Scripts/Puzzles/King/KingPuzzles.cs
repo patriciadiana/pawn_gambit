@@ -43,6 +43,8 @@ public class KingPuzzles : MonoBehaviour
 
             PuzzleManager.Instance.kingPuzzleCompleted = true;
 
+            PuzzlePiecesDisplay.Instance.UnlockPiece("king");
+
             PuzzleManager.Instance.CompletePuzzle(
                 puzzleConfig.initialSceneName,
                 puzzleConfig.nextPieceType,
@@ -56,9 +58,12 @@ public class KingPuzzles : MonoBehaviour
         if (puzzleConfig.hasTimeLimit && !puzzleWon)
         {
             timer -= Time.deltaTime;
+            TimerUI.Instance.DisplayTime(timer);
 
             if (timer <= 0f)
             {
+                TimerUI.Instance.Hide();
+
                 PuzzleManager.Instance.FailPuzzle(
                     puzzleConfig.puzzleName,
                     puzzleConfig.nextPieceType,

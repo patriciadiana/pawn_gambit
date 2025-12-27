@@ -113,12 +113,12 @@ MonoBehaviour:
   black_king: {fileID: 8291693231845866441, guid: b070aaee46f9d654681d8d1c98417b60, type: 3}
   black_rook: {fileID: 2426732337217778467, guid: b070aaee46f9d654681d8d1c98417b60, type: 3}
   black_pawn: {fileID: 8855814827197089491, guid: b070aaee46f9d654681d8d1c98417b60, type: 3}
-  white_queen: {fileID: -2845713056447680889, guid: 4c35423d7d41f054986349979ef2895d, type: 3}
-  white_knight: {fileID: -6915752714702971298, guid: 4c35423d7d41f054986349979ef2895d, type: 3}
-  white_bishop: {fileID: -2860075317072231389, guid: 4c35423d7d41f054986349979ef2895d, type: 3}
-  white_king: {fileID: 8411471520549953721, guid: 4c35423d7d41f054986349979ef2895d, type: 3}
-  white_rook: {fileID: -2884761833673606733, guid: 4c35423d7d41f054986349979ef2895d, type: 3}
-  white_pawn: {fileID: 6735342673156964780, guid: 4c35423d7d41f054986349979ef2895d, type: 3}
+  white_queen: {fileID: 706966842301063632, guid: e16160f26f898c345bb1cc349c85f095, type: 3}
+  white_knight: {fileID: 7867586256093270089, guid: e16160f26f898c345bb1cc349c85f095, type: 3}
+  white_bishop: {fileID: -3582160150155592858, guid: e16160f26f898c345bb1cc349c85f095, type: 3}
+  white_king: {fileID: 114481928810655298, guid: e16160f26f898c345bb1cc349c85f095, type: 3}
+  white_rook: {fileID: -1002955220598501908, guid: e16160f26f898c345bb1cc349c85f095, type: 3}
+  white_pawn: {fileID: -1720229343757614152, guid: e16160f26f898c345bb1cc349c85f095, type: 3}
   lastPosition: {x: 0, y: 0}
 --- !u!61 &-7311837983100112769
 BoxCollider2D:

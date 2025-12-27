@@ -26,8 +26,12 @@ public class QueensProblem : MonoBehaviour
         if (puzzleConfig.hasTimeLimit)
         {
             timer -= Time.deltaTime;
+            TimerUI.Instance.DisplayTime(timer);
+
             if (timer <= 0f)
             {
+                TimerUI.Instance.Hide();
+
                 PuzzleManager.Instance.FailPuzzle(
                     puzzleConfig.puzzleName,
                     puzzleConfig.nextPieceType,
@@ -95,6 +99,8 @@ public class QueensProblem : MonoBehaviour
 
             if (!attacking)
             {
+                PuzzlePiecesDisplay.Instance.UnlockPiece("queen");
+
                 PuzzleManager.Instance.CompletePuzzle(
                     puzzleConfig.initialSceneName,
                     puzzleConfig.nextPieceType,
