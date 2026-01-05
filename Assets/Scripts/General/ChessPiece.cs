@@ -62,6 +62,18 @@ public class ChessPiece : MonoBehaviour
         GameObject controller = GameObject.FindGameObjectWithTag("GameController");
         ChessGame chessGameScript = controller.GetComponent<ChessGame>();
 
+        //// HARD BLOCKS — must come first
+        //if (chessGameScript.GameOver)
+        //    return;
+
+        //if (chessGameScript.IsAITurnInProgress)
+        //    return;
+
+        // Player is ALWAYS white in midgame mode
+        if (chessGameScript.isMidgameMode && player != "white")
+            return;
+
+        // Turn ownership check
         if (player != chessGameScript.GetCurrentPlayer() && !ignorePuzzleRestriction)
             return;
 

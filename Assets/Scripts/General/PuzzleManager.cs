@@ -26,7 +26,8 @@ public class PuzzleManager : MonoBehaviour
     public void CompletePuzzle(string name, string nextPiece, Vector2Int pos, string reward)
     {
         solvedPuzzles.Add(name);
-        if(!string.IsNullOrEmpty(reward))
+
+        if (!string.IsNullOrEmpty(reward))
         {
             rewardPieces.Add(reward);
         }

@@ -21,6 +21,9 @@ public class KingPuzzles : MonoBehaviour
 
     void Start()
     {
+        SoundManager.Instance.PauseMusic();
+        SoundManager.PlayMusic(MusicType.KINGTHEME, 0.2f);
+
         ChessGame.Instance.OnMoveCompleted += OnPieceMoved;
         ChessGame.Instance.puzzleMode = true;
 

@@ -19,6 +19,8 @@ public class HowToDisplay : MonoBehaviour
     public KeyCode skipKey = KeyCode.Space;
 
     private Coroutine hideRoutine;
+    public bool displayed = false;
+    public static bool hasBeenDisplayed = false;
 
     void Start()
     {
@@ -27,6 +29,8 @@ public class HowToDisplay : MonoBehaviour
 
     void Update()
     {
+        displayed = hasBeenDisplayed;
+
         if (howToPanel.activeSelf && Input.GetKeyDown(skipKey))
         {
             HidePanel();
@@ -36,6 +40,8 @@ public class HowToDisplay : MonoBehaviour
     public void ShowPanel()
     {
         howToText.text = puzzleInstructions;
+
+        hasBeenDisplayed = false;
 
         howToPanel.SetActive(true);
         Time.timeScale = 0f;
@@ -49,6 +55,7 @@ public class HowToDisplay : MonoBehaviour
     private IEnumerator HideAfterDelay()
     {
         yield return new WaitForSecondsRealtime(closeTime);
+        hasBeenDisplayed = true;
         HidePanel();
     }
 

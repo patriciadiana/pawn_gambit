@@ -6,6 +6,8 @@ using Random = UnityEngine.Random;
 public class MidgameGenerator : MonoBehaviour
 {
     public static MidgameGenerator Instance;
+    private List<Vector2Int> white_pieces = new List<Vector2Int>();
+    private List<Vector2Int> black_pieces = new List<Vector2Int>();
 
     void Awake()
     {
@@ -46,81 +48,58 @@ public class MidgameGenerator : MonoBehaviour
             }
         }
     }
-    //Vector2Int SpawnWhiteSide(HashSet<Vector2Int> occupied)
-    //{
-    //    Vector2Int kingPos = GetRandomEmpty(occupied, (x, y) => y == 0);
-    //    SpawnPiece("white_king", kingPos, occupied);
-
-    //    int pawnCount = Random.Range(3, 6);
-    //    int count = Random.Range(0, 3);
-
-    //    for (int i = 0; i < pawnCount; i++)
-    //    {
-    //        Vector2Int pos = GetRandomEmpty(occupied, (x, y) => IsValidPawnSquare(y));
-    //        SpawnPiece("white_pawn", pos, occupied);
-    //    }
-
-    //    if (PuzzleManager.Instance != null && PuzzleManager.Instance.rewardPieces != null)
-    //    {
-    //        foreach (string reward in PuzzleManager.Instance.rewardPieces)
-    //        {
-    //            if (string.IsNullOrEmpty(reward)) continue;
-
-    //            if (reward.Equals("queen", StringComparison.OrdinalIgnoreCase))
-    //            {
-    //                Vector2Int pos = GetRandomEmpty(
-    //                    occupied,
-    //                    (x, y) => y <= 3 && !IsPawnRank(y)
-    //                );
-
-    //                SpawnPiece("white_queen", pos, occupied);
-    //                continue;
-    //            }
-    //            // 0-2 copies
-    //            else if (!reward.Equals("king", StringComparison.OrdinalIgnoreCase))
-    //            {
-    //                for (int i = 0; i < count; i++)
-    //                {
-    //                    Vector2Int pos = GetRandomEmpty(
-    //                        occupied,
-    //                        (x, y) => y <= 3 && !IsPawnRank(y)
-    //                    );
-
-    //                    SpawnPiece($"white_{reward}", pos, occupied);
-    //                }
-    //            }  
-    //        }
-    //    }
-
-    //    return kingPos;
-    //}
 
     Vector2Int SpawnWhiteSide(HashSet<Vector2Int> occupied)
     {
         Vector2Int kingPos = GetRandomEmpty(occupied, (x, y) => y == 0);
         SpawnPiece("white_king", kingPos, occupied);
 
-        Vector2Int queenPos = GetRandomEmpty(occupied, (x, y) => y <= 3 && !IsPawnRank(y));
-        SpawnPiece("white_queen", queenPos, occupied);
-
-        for (int i = 0; i < 2; i++)
-        {
-            Vector2Int rookPos = GetRandomEmpty(occupied, (x, y) => y <= 3 && !IsPawnRank(y));
-            SpawnPiece("white_rook", rookPos, occupied);
-        }
-
         int pawnCount = Random.Range(3, 6);
+        int count = Random.Range(1, 3);
+
         for (int i = 0; i < pawnCount; i++)
         {
             Vector2Int pos = GetRandomEmpty(occupied, (x, y) => IsValidPawnSquare(y));
             SpawnPiece("white_pawn", pos, occupied);
         }
 
+        if (PuzzleManager.Instance != null && PuzzleManager.Instance.rewardPieces != null)
+        {
+            foreach (string reward in PuzzleManager.Instance.rewardPieces)
+            {
+                if (string.IsNullOrEmpty(reward)) continue;
+
+                if (reward.Equals("queen", StringComparison.OrdinalIgnoreCase))
+                {
+                    Vector2Int pos = GetRandomEmpty(
+                        occupied,
+                        (x, y) => y <= 3 && !IsPawnRank(y)
+                    );
+
+                    SpawnPiece("white_queen", pos, occupied);
+                    continue;
+                }
+                // 0-2 copies
+                else if (!reward.Equals("king", StringComparison.OrdinalIgnoreCase))
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        Vector2Int pos = GetRandomEmpty(
+                            occupied,
+                            (x, y) => y <= 3 && !IsPawnRank(y)
+                        );
+
+                        SpawnPiece($"white_{reward}", pos, occupied);
+                    }
+                }
+            }
+        }
+
         return kingPos;
     }
 
 
-    void SpawnBlackSide(HashSet<Vector2Int> occupied, Vector2Int whiteKing)
+    Vector2Int SpawnBlackSide(HashSet<Vector2Int> occupied, Vector2Int whiteKing)
     {
         Vector2Int kingPos;
         int attempts = 0;
@@ -130,8 +109,8 @@ public class MidgameGenerator : MonoBehaviour
             attempts++;
             if (attempts > 100)
             {
-                Debug.LogError("Failed to spawn black king in a safe position!");
-                return;
+                Debug.Log("Failed to spawn black king in a safe position!");
+                return kingPos;
             }
         }
         while (IsAdjacentToWhiteKing(kingPos, whiteKing) || IsSquareAttackedByWhite(kingPos));
@@ -142,23 +121,14 @@ public class MidgameGenerator : MonoBehaviour
         for (int i = 0; i < pawnCount; i++)
         {
             Vector2Int pos = GetRandomEmpty(occupied, (x, y) => IsValidPawnSquare(y));
-            SpawnPiece("black_pawn", pos, occupied);
         }
-
-        //Dictionary<string, int> pieceLimits = new()
-        //{
-        //    { "queen", 1 },
-        //    { "rook", 2 },
-        //    { "bishop", 2 },
-        //    { "knight", 2 }
-        //};
 
         Dictionary<string, int> pieceLimits = new()
         {
             { "queen", 1 },
-            { "rook", 1 },
-            { "bishop", 1 },
-            { "knight", 1 }
+            { "rook", 2 },
+            { "bishop", 2 },
+            { "knight", 2 }
         };
 
         foreach (var pieceType in pieceLimits.Keys)
@@ -171,6 +141,7 @@ public class MidgameGenerator : MonoBehaviour
                 SpawnPiece($"black_{pieceType}", pos, occupied);
             }
         }
+        return kingPos;
     }
 
     bool IsValidPawnSquare(int y) => y >= 1 && y <= 6;
@@ -189,6 +160,21 @@ public class MidgameGenerator : MonoBehaviour
             if (pos == pawn + new Vector2Int(1, 1) || pos == pawn + new Vector2Int(-1, 1))
                 return true;
         }
+        foreach (Vector2Int rook in FindPieces("white_rook"))
+        {
+            //check if on same row / column
+            if (pos[0] == rook[0] || pos[1] == rook[1])
+                return true;
+        }
+        foreach (Vector2Int queen in FindPieces("white_queen"))
+        {
+            //check if on same row / column
+            if (pos[0] == queen[0] || pos[1] == queen[1])
+                return true;
+            //check if on same diagonal
+            if (pos[0] - pos[1] == queen[0] - queen[1] || pos[0] + pos[1] == queen[0] + queen[1])
+                return true;
+        }
         return false;
     }
 
@@ -200,7 +186,7 @@ public class MidgameGenerator : MonoBehaviour
         if (piece != null)
             occupied.Add(pos);
         else
-            Debug.LogError($"Failed to spawn {pieceName} at {pos}");
+            Debug.Log($"Failed to spawn {pieceName} at {pos}");
     }
 
     Vector2Int GetRandomEmpty(HashSet<Vector2Int> occupied, Func<int, int, bool> validator = null)

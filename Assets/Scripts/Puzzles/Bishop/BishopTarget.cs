@@ -1,10 +1,36 @@
 using UnityEngine;
+using TMPro;
+using System.Collections.Generic;
 
 public class BishopTarget : MonoBehaviour
 {
     public BishopMovement bishopMovement;
     public TargetGeneration targetGen;
+
+    public TextMeshProUGUI targetsLeftText;
+
     private static int captured = 0;
+    private static bool uiShown = false;
+
+    private void Start()
+    {
+        targetsLeftText.gameObject.SetActive(false);
+    }
+
+    private void Update()
+    {
+        // Show UI only after HowToDisplay is done
+        if (HowToDisplay.hasBeenDisplayed && !uiShown)
+        {
+            uiShown = true;
+
+            if (targetsLeftText != null)
+            {
+                targetsLeftText.gameObject.SetActive(true);
+                UpdateTargetsLeftUI();
+            }
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -21,6 +47,8 @@ public class BishopTarget : MonoBehaviour
 
         int total = targetGen.spawnedTargets + 1;
 
+        UpdateTargetsLeftUI();
+
         if (captured >= total)
         {
             bishopMovement.MarkWin();
@@ -29,4 +57,14 @@ public class BishopTarget : MonoBehaviour
         Destroy(gameObject);
     }
 
+    void UpdateTargetsLeftUI()
+    {
+        if (!HowToDisplay.hasBeenDisplayed || targetsLeftText == null)
+            return;
+
+        int total = targetGen.spawnedTargets + 1;
+        int remaining = Mathf.Max(0, total - captured);
+
+        targetsLeftText.text = $"Targets left: {remaining}";
+    }
 }

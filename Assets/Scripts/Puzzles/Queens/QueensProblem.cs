@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI; // or TMPro if using TextMeshPro
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class QueensProblem : MonoBehaviour
 {
@@ -11,16 +13,32 @@ public class QueensProblem : MonoBehaviour
     public PuzzleConfig puzzleConfig;
     private float timer;
 
+    [Header("UI Elements")]
+    public TextMeshProUGUI queensCounterText;      
+    public TextMeshProUGUI attackStatusText;
+
     void Start()
     {
+        SoundManager.Instance.PauseMusic();
+        SoundManager.PlayMusic(MusicType.QUEENTHEME, 0.2f);
+
         mainCamera = Camera.main;
         boardCollider = GetComponent<Collider2D>();
+
+        queensCounterText.gameObject.SetActive(false);
+        attackStatusText.gameObject.SetActive(false);
 
         if (puzzleConfig.hasTimeLimit)
         {
             timer = puzzleConfig.timeLimitinSeconds;
         }
+
+        if (HowToDisplay.hasBeenDisplayed)
+        {
+            UpdateUI();
+        }
     }
+
     void Update()
     {
         if (puzzleConfig.hasTimeLimit)
@@ -40,6 +58,7 @@ public class QueensProblem : MonoBehaviour
             }
         }
     }
+
     private void OnMouseDown()
     {
         Vector2Int boardPos = GetClickedBoardPosition();
@@ -50,16 +69,20 @@ public class QueensProblem : MonoBehaviour
 
             if (existingPiece == null)
             {
+                SoundManager.PlaySound(SoundType.MOVEPIECE, 0.2f);
                 ChessGame.Instance.SpawnChessPiece("white_queen", boardPos.x, boardPos.y);
             }
             else if (existingPiece != null && existingPiece.name.Contains("queen"))
             {
-                Destroy(existingPiece);
+                DestroyImmediate(existingPiece);
             }
+
             queensCounter = GetAllQueenPositions().Count;
+            UpdateUI();
             CheckWinCondition();
         }
     }
+
     public List<Vector2Int> GetAllQueenPositions()
     {
         List<Vector2Int> positions = new List<Vector2Int>();
@@ -77,6 +100,7 @@ public class QueensProblem : MonoBehaviour
         }
         return positions;
     }
+
     private void CheckWinCondition()
     {
         if (queensCounter == 8)
@@ -110,10 +134,12 @@ public class QueensProblem : MonoBehaviour
             }
         }
     }
+
     private bool AreQueensAttacking(Vector2Int a, Vector2Int b)
     {
         return (a.x == b.x || a.y == b.y || Mathf.Abs(a.x - b.x) == Mathf.Abs(a.y - b.y));
     }
+
     private Vector2Int GetClickedBoardPosition()
     {
         Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
@@ -122,10 +148,47 @@ public class QueensProblem : MonoBehaviour
         if (boardCollider.OverlapPoint(mouseWorldPos))
         {
             Vector2Int gridPos = BoardConfig.WorldToGrid(mouseWorldPos);
-
             return BoardConfig.ClampToBoard(gridPos);
         }
-        
+
         return new Vector2Int(-1, -1);
+    }
+
+    private void UpdateUI()
+    {
+        if (!HowToDisplay.hasBeenDisplayed) return;
+
+        queensCounterText.gameObject.SetActive(true);
+        attackStatusText.gameObject.SetActive(true);
+
+        List<Vector2Int> queens = GetAllQueenPositions();
+        int currentQueens = queens.Count;
+
+        queensCounterText.text = $"Queens: {currentQueens}/8";
+
+        bool attacking = false;
+        for (int i = 0; i < queens.Count; i++)
+        {
+            for (int j = i + 1; j < queens.Count; j++)
+            {
+                if (AreQueensAttacking(queens[i], queens[j]))
+                {
+                    attacking = true;
+                    break;
+                }
+            }
+            if (attacking) break;
+        }
+
+        if (attacking)
+        {
+            attackStatusText.text = "Queens are attacking!";
+            attackStatusText.color = Color.red;
+        }
+        else
+        {
+            attackStatusText.text = "Safe!";
+            attackStatusText.color = Color.green;
+        }
     }
 }

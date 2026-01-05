@@ -62,29 +62,22 @@ public class StockfishManager : MonoBehaviour
 
     private IEnumerator InitializeEngine()
     {
-        Debug.Log("Waiting for Stockfish banner...");
-
         yield return new WaitUntil(() => bannerReceived);
-
-        Debug.Log("Banner received, priming input stream");
 
         input.WriteLine();
         input.Flush();
 
         yield return null;
 
-        Debug.Log("Sending UCI");
         Send("uci");
 
         yield return new WaitUntil(() => uciOkReceived);
 
-        Debug.Log("uciok received, sending isready");
         Send("isready");
 
         yield return new WaitUntil(() => readyOkReceived);
 
         engineReady = true;
-        Debug.Log("Stockfish is fully ready");
     }
 
     private void OnOutput(object sender, DataReceivedEventArgs e)
@@ -93,7 +86,6 @@ public class StockfishManager : MonoBehaviour
             return;
 
         string line = e.Data.Trim();
-        Debug.Log("[Stockfish] " + line);
 
         // Banner line (version info)
         if (!bannerReceived && line.StartsWith("Stockfish 17.1"))
@@ -118,7 +110,7 @@ public class StockfishManager : MonoBehaviour
         }
     }
 
-    public IEnumerator GetBestMove(string fen, int depth, Action<string> callback)
+    public IEnumerator GetBestMove(string fen, int depth, Action<string,string> callback, string turn)
     {
         yield return new WaitUntil(() => engineReady);
 
@@ -136,7 +128,7 @@ public class StockfishManager : MonoBehaviour
 
         yield return new WaitUntil(() => !waitingForMove);
 
-        callback?.Invoke(lastBestMove);
+        callback?.Invoke(lastBestMove, turn);
     }
 
     private void Send(string command)
@@ -149,9 +141,20 @@ public class StockfishManager : MonoBehaviour
             .Replace("\0", "")
             .Trim();
 
-        Debug.Log("[Sending] " + command);
-        input.WriteLine(command);
-        input.Flush();
+        try
+        {
+            input.WriteLine(command);
+            input.Flush();
+        }
+        catch (IOException e)
+        {
+            Debug.LogError("IOException sending command to Stockfish: " + e.Message + " Command: " + command);
+            // do NOT crash, StockfishTurnController will handle missing bestmove
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Unexpected exception sending command to Stockfish: " + e.Message);
+        }
     }
 
     void OnApplicationQuit()

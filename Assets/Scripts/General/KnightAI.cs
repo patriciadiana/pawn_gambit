@@ -56,8 +56,7 @@ public class KnightAI : MonoBehaviour
 
             GameObject occupant = game.GetPosition(newPos.x, newPos.y);
 
-            if (occupant != null &&
-                occupant.GetComponent<ChessPiece>().player == piece.player)
+            if (occupant != null && occupant != targetPawn)
                 continue;
 
             float dist = Vector2Int.Distance(newPos, pawnPos);
@@ -82,9 +81,11 @@ public class KnightAI : MonoBehaviour
             if (targetAtPos == targetPawn)
             {
                 Destroy(targetPawn);
-                ChessGame.Instance.HandleGameOver();
             }
-            Destroy(targetAtPos);
+            else
+            {
+                return;
+            }
         }
 
         game.SetPositionEmpty(p.xBoard, p.yBoard);
