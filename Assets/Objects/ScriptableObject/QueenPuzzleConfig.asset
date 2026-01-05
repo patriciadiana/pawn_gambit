@@ -15,7 +15,7 @@ MonoBehaviour:
   puzzleName: QueenPuzzle
   initialSceneName: ChessGame
   nextPieceType: white_rook
-  nextPiecePosition: {x: 5, y: 4}
+  nextPiecePosition: {x: 6, y: 2}
   rewardType: queen
   hasTimeLimit: 1
   timeLimitinSeconds: 80

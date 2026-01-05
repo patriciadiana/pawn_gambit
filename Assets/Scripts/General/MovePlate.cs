@@ -29,6 +29,15 @@ public class MovePlate : MonoBehaviour
 
         if (isAttackMove)
         {
+            SoundManager.PlaySound(SoundType.ATTACKPIECE, 1f);
+        }
+        else
+        {
+            SoundManager.PlaySound(SoundType.MOVEPIECE, 1f);
+        }
+
+        if (isAttackMove)
+        {
             GameObject targetPiece = gameController.GetComponent<ChessGame>().GetPosition(targetX, targetY);
             if(targetPiece != null)
             {
@@ -36,29 +45,29 @@ public class MovePlate : MonoBehaviour
 
                 if(chessGame.puzzleMode)
                 {
-                    if(targetPieceScript.name.Contains("queen"))
+                    if(targetPieceScript.name.Contains("white_queen"))
                     {
                         chessGame.SavePawnPosition(referencePiece);
                         SceneManager.LoadScene("QueenPuzzle");
                         //SceneManager.LoadScene("KingPuzzle");
                     }
-                    else if (targetPieceScript.name.Contains("rook"))
+                    else if (targetPieceScript.name.Contains("white_rook"))
                     {
                         chessGame.SavePawnPosition(referencePiece);
                         SceneManager.LoadScene("RookPuzzle");
                     }
-                    else if (targetPieceScript.name.Contains("bishop"))
+                    else if (targetPieceScript.name.Contains("white_bishop"))
                     {
                         chessGame.SavePawnPosition(referencePiece);
                         SceneManager.LoadScene("BishopPuzzle");
                     }
-                    else if (targetPieceScript.name.Contains("knight") &&
+                    else if (targetPieceScript.name.Contains("white_knight") &&
                              !targetPiece.CompareTag("EnemyKnight"))
                     {
                         chessGame.SavePawnPosition(referencePiece);
                         SceneManager.LoadScene("KnightPuzzle");
                     }
-                    else if (targetPieceScript.name.Contains("king"))
+                    else if (targetPieceScript.name.Contains("white_king"))
                     {
                         chessGame.SavePawnPosition(referencePiece);
                         SceneManager.LoadScene("KingPuzzle");

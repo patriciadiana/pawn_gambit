@@ -26,29 +26,45 @@ public class StockfishTurnController : MonoBehaviour
         /* If the current player is black -> Stockfish moves*/
         if (chessGame.GetCurrentPlayer() == "black")
         {
-            StartCoroutine(HandleStockfishTurn());
+            Debug.Log($"did white put black in check ? {ChessGame.IsKingInCheck("black")}");
+            StartCoroutine(HandleStockfishTurn("black"));
         }
     }
 
-    private IEnumerator HandleStockfishTurn()
+    private IEnumerator HandleStockfishTurn(string turn)
     {
         string fen = ChessGame.GenerateFEN();
-        Debug.Log("FEN: " + fen);
 
         yield return StockfishManager.Instance.GetBestMove(
             fen,
             12,
-            ExecuteStockfishMove
+            ExecuteStockfishMove,
+            turn
         );
     }
 
-    private void ExecuteStockfishMove(string uci)
+    private void ExecuteStockfishMove(string uci, string turn)
     {
-        if (string.IsNullOrEmpty(uci) || uci == "none")
+        if (string.IsNullOrEmpty(uci) || uci == "(none)")
         {
-            Debug.Log("Game over");
+            if(turn=="white")
+            {
+                if (ChessGame.IsKingInCheck("white") == false)
+                    Debug.Log("stalemate");
+                else
+                    Debug.Log("black wins");
+            }
+            else
+            {
+                if (ChessGame.IsKingInCheck("black") == false)
+                    Debug.Log("stalemate");
+                else
+                    Debug.Log("white wins");
+            }
             return;
         }
+        if (turn == "white")
+            return;
 
         Vector2Int from = UciToBoard(uci.Substring(0, 2));
         Vector2Int to = UciToBoard(uci.Substring(2, 2));
@@ -73,6 +89,10 @@ public class StockfishTurnController : MonoBehaviour
         piece.SetCoords();
 
         chessGame.SetPosition(pieceObj);
+
+        Debug.Log($"did black put white in check ? {ChessGame.IsKingInCheck("white")}");
+        
+        StartCoroutine(HandleStockfishTurn("white"));
     }
 
     private Vector2Int UciToBoard(string uci)

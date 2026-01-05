@@ -12,19 +12,19 @@ EditorBuildSettings:
     path: Assets/Scenes/ChessGame.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
-    path: Assets/Scenes/RookPuzzle.unity
+    path: Assets/Scenes/Puzzles/RookPuzzle.unity
     guid: 0e407082244e58d4a9b07b82bb403723
   - enabled: 1
-    path: Assets/Scenes/QueenPuzzle.unity
+    path: Assets/Scenes/Puzzles/QueenPuzzle.unity
     guid: 620217f867c0b0a469009c8fd823d568
   - enabled: 1
-    path: Assets/Scenes/BishopPuzzle.unity
+    path: Assets/Scenes/Puzzles/BishopPuzzle.unity
     guid: 01797dd2250ea114bb2e5fe1fa63f16c
   - enabled: 1
-    path: Assets/Scenes/KnightPuzzle.unity
+    path: Assets/Scenes/Puzzles/KnightPuzzle.unity
     guid: 623b9963bffc80142bc61fd75c0c13de
   - enabled: 1
-    path: Assets/Scenes/KingPuzzle.unity
+    path: Assets/Scenes/Puzzles/KingPuzzle.unity
     guid: 5bbaf99761593d94697a668b1e484c71
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

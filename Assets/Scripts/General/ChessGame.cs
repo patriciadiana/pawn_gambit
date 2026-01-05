@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,6 +20,8 @@ public class ChessGame : MonoBehaviour
     private GameObject[,] boardPositions = new GameObject[8, 8];
     private GameObject[] blackPieces = new GameObject[16];
     private GameObject[] whitePieces = new GameObject[16];
+    private static List<GameObject> white_pieces = new List<GameObject>();
+    private static List<GameObject> black_pieces = new List<GameObject>();
 
     public static ChessGame Instance;
 
@@ -47,6 +50,8 @@ public class ChessGame : MonoBehaviour
     {
         if (scene.name != "ChessGame")
             return;
+
+        SoundManager.Instance.ResumeMusic();
 
         if (PuzzleManager.Instance != null &&
         PuzzleManager.Instance.kingPuzzleCompleted)
@@ -391,6 +396,11 @@ public class ChessGame : MonoBehaviour
 
         SetPosition(newPiece);
 
+        if(pieceName.StartsWith("white"))
+            white_pieces.Add(newPiece);
+        else
+            black_pieces.Add(newPiece);
+
         return newPiece;
     }
 
@@ -434,5 +444,168 @@ public class ChessGame : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         SpawnChessPiece(name, x, y);
+    }
+
+    public static bool IsKingInCheck(string piece_color)
+    {
+        GameObject king;
+        ChessPiece kingPiece = null;
+        List<GameObject> pieces = new List<GameObject>();
+        List<GameObject> enemy_pieces = new List<GameObject>();
+        List<GameObject> all_pieces = white_pieces;
+        all_pieces.AddRange(black_pieces);
+
+        string enemy_color;
+
+        if (piece_color == "white")
+        {
+            pieces = white_pieces;
+            enemy_pieces = black_pieces;
+            enemy_color = "black";
+        }
+        else
+        {
+            pieces = black_pieces;
+            enemy_pieces = white_pieces;
+            enemy_color = "white";
+        }
+
+        foreach (GameObject piece in pieces)
+        {
+            if(piece!=null)
+            {
+                ChessPiece pieceScript = piece.GetComponent<ChessPiece>();
+                if (pieceScript.name == piece_color + "_king")
+                {
+                    king = piece;
+                    kingPiece = king.GetComponent<ChessPiece>();
+                    break;
+                }
+
+            }
+        }
+
+        foreach (GameObject piece in enemy_pieces)
+        {
+            if(piece!=null)
+            {
+                ChessPiece pieceScript = piece.GetComponent<ChessPiece>();
+                // is there a check on same row/column
+                if (pieceScript.name == enemy_color + "_rook" || pieceScript.name == enemy_color + "_queen")
+                {
+                    if (pieceScript.xBoard == kingPiece.xBoard) //possible check on same row
+                    {
+                        if (IsThereAPieceBetweenTwoPieces(kingPiece, pieceScript, all_pieces, "row") == false)
+                            return true;
+                    }
+                    if (pieceScript.yBoard == kingPiece.yBoard) //possible check on same column
+                    {
+                        if (IsThereAPieceBetweenTwoPieces(kingPiece, pieceScript, all_pieces, "column") == false)
+                            return true;
+                    }
+                }
+                // is there a check on same diagonal
+                if (pieceScript.name == enemy_color + "_bishop" || pieceScript.name == enemy_color + "_queen")
+                {
+                    //if (pos[0] - pos[1] == queen[0] - queen[1] || pos[0] + pos[1] == queen[0] + queen[1])
+                    if (pieceScript.xBoard - pieceScript.yBoard == kingPiece.xBoard - kingPiece.yBoard) //possible check on left leaning diagonal
+                    {
+                        if (IsThereAPieceBetweenTwoPieces(kingPiece, pieceScript, all_pieces, "right_diagonal") == false)
+                            return true;
+                    }
+                    if (pieceScript.xBoard + pieceScript.yBoard == kingPiece.xBoard + kingPiece.yBoard) //possible check on right leaning diagonal
+                    {
+                        if (IsThereAPieceBetweenTwoPieces(kingPiece, pieceScript, all_pieces, "left_diagonal") == false)
+                            return true;
+                    }
+                }
+                if (pieceScript.name == enemy_color + "_knight")
+                {
+                    int[] x = { 1, 2, 2, 1, -1, -2, -2, -1 };
+                    int[] y = { -2, -1, 1, 2, 2, 1, -1, -2 };
+
+                    for (int i = 0; i < 8; i++)
+                    {
+                        int newx = kingPiece.xBoard + x[i];
+                        int newy = kingPiece.yBoard + y[i];
+                        if (0 <= newx && newx < 8 && 0 <= newy && newy < 8)
+                        {
+                            if (pieceScript.xBoard == newx && pieceScript.yBoard == newy)
+                                return true;
+                        }
+                    }
+                }
+                if (pieceScript.name == enemy_color + "_pawn")
+                {
+                    if(piece_color == "white")
+                    {
+                        if(kingPiece.yBoard <7)
+                        {
+                            if ((kingPiece.yBoard + 1 == pieceScript.yBoard) &&
+                               (kingPiece.xBoard == pieceScript.xBoard + 1 || kingPiece.xBoard == pieceScript.xBoard - 1))
+                                return true;
+                        }
+                    }
+                    else
+                    {
+                        if (kingPiece.yBoard > 2)
+                        {
+                            if ((kingPiece.yBoard - 1 == pieceScript.yBoard) &&
+                               (kingPiece.xBoard == pieceScript.xBoard + 1 || kingPiece.xBoard == pieceScript.xBoard - 1))
+                                return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+    public static bool IsThereAPieceBetweenTwoPieces(ChessPiece piece1, ChessPiece piece2, List<GameObject> allPieces, string comparison)
+    {
+        foreach (GameObject piece in allPieces)
+        {
+            if (piece != null)
+            {
+                ChessPiece pieceScript = piece.GetComponent<ChessPiece>();
+                if (comparison == "row")
+                {
+                    if (pieceScript.xBoard == piece1.xBoard &&
+                        ((piece1.yBoard < pieceScript.yBoard && pieceScript.yBoard < piece2.yBoard) ||
+                        (piece2.yBoard < pieceScript.yBoard && pieceScript.yBoard < piece1.yBoard)))
+                        return true;
+                }
+                if (comparison == "column")
+                {
+                    if (pieceScript.yBoard == piece1.yBoard &&
+                        ((piece1.xBoard < pieceScript.xBoard && pieceScript.xBoard < piece2.xBoard) ||
+                        (piece2.xBoard < pieceScript.xBoard && pieceScript.xBoard < piece1.xBoard)))
+                        return true;
+                }
+                if(comparison == "right_diagonal")
+                {
+                    if(pieceScript.xBoard - pieceScript.yBoard == piece1.xBoard - piece1.yBoard)
+                    {
+                        if((piece1.xBoard < pieceScript.xBoard && pieceScript.xBoard < piece2.xBoard &&
+                            piece1.yBoard < pieceScript.yBoard && pieceScript.yBoard < piece2.yBoard) ||
+                        (piece2.xBoard < pieceScript.xBoard && pieceScript.xBoard < piece1.xBoard &&
+                            piece2.yBoard < pieceScript.yBoard && pieceScript.yBoard < piece1.yBoard))
+                            return true;
+                    }
+                }
+                if (comparison == "left_diagonal")
+                {
+                    if (pieceScript.xBoard + pieceScript.yBoard == piece1.xBoard + piece1.yBoard)
+                    {
+                        if ((piece1.xBoard < pieceScript.xBoard && pieceScript.xBoard < piece2.xBoard &&
+                            piece1.yBoard > pieceScript.yBoard && pieceScript.yBoard > piece2.yBoard) ||
+                        (piece2.xBoard < pieceScript.xBoard && pieceScript.xBoard < piece1.xBoard &&
+                            piece2.yBoard > pieceScript.yBoard && pieceScript.yBoard > piece1.yBoard))
+                            return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

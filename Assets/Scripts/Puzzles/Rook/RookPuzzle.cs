@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class RookPuzzle : MonoBehaviour
 {
@@ -9,10 +10,7 @@ public class RookPuzzle : MonoBehaviour
     public Transform[] crates;
     public Transform[] goals;
 
-    //private float tileSize = BoardConfig.TileSize;
-    //private Vector2 boardOffset = new Vector2(-2.3f, -2.3f);
-    //private int boardWidth = 8;
-    //private int boardHeight = 8;
+    public TextMeshProUGUI cratesLeftText;
 
     private bool isMoving = false;
 
@@ -24,6 +22,12 @@ public class RookPuzzle : MonoBehaviour
 
     void Start()
     {
+        SoundManager.Instance.PauseMusic();
+        SoundManager.PlayMusic(MusicType.ROOKTHEME, 0.2f);
+
+        // Hide UI until HowTo is displayed
+        cratesLeftText.gameObject.SetActive(false);
+
         playerStartPos = player.position;
         crateStartPositions = new Vector3[crates.Length];
         for (int i = 0; i < crates.Length; i++)
@@ -37,6 +41,13 @@ public class RookPuzzle : MonoBehaviour
 
     void Update()
     {
+        // Show UI only after HowToDisplay is done
+        if (HowToDisplay.hasBeenDisplayed && !cratesLeftText.gameObject.activeSelf)
+        {
+            cratesLeftText.gameObject.SetActive(true);
+            UpdateUIText();
+        }
+
         if (isMoving) return;
 
         if (puzzleConfig.hasTimeLimit)
@@ -109,6 +120,7 @@ public class RookPuzzle : MonoBehaviour
 
         isMoving = false;
         CheckWin();
+        UpdateUIText();
     }
 
     Transform GetCrateAtGrid(Vector2Int g)
@@ -135,7 +147,6 @@ public class RookPuzzle : MonoBehaviour
                 correct++;
         }
 
-
         if (correct == goals.Length)
         {
             PuzzlePiecesDisplay.Instance.UnlockPiece("rook");
@@ -157,5 +168,28 @@ public class RookPuzzle : MonoBehaviour
         {
             crates[i].position = crateStartPositions[i];
         }
+
+        UpdateUIText();
+    }
+
+    void UpdateUIText()
+    {
+        if (!HowToDisplay.hasBeenDisplayed)
+            return;
+
+        int placed = 0;
+        HashSet<Vector2Int> cratePositions = new HashSet<Vector2Int>();
+
+        foreach (var c in crates)
+            cratePositions.Add(BoardConfig.WorldToGrid(c.position));
+
+        foreach (var g in goals)
+        {
+            if (cratePositions.Contains(BoardConfig.WorldToGrid(g.position)))
+                placed++;
+        }
+
+        int remaining = goals.Length - placed;
+        cratesLeftText.text = $"Crates left: {remaining}";
     }
 }

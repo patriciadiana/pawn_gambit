@@ -20,6 +20,9 @@ public class KnightTour : MonoBehaviour
 
     void Start()
     {
+        SoundManager.Instance.PauseMusic();
+        SoundManager.PlayMusic(MusicType.KNIGHTTHEME, 0.2f);
+
         var knightObj = ChessGame.Instance.SpawnChessPiece("black_knight", 0, 0);
         knight = knightObj.GetComponent<ChessPiece>();
         knight.ignorePuzzleRestriction = true;
@@ -137,9 +140,9 @@ public class KnightTour : MonoBehaviour
             sq.GetComponent<SpriteRenderer>().color = DefaultColor;
 
         foreach (Vector2Int pos in visited)
-            squares[pos.x, pos.y].GetComponent<SpriteRenderer>().color = Blue;
+            squares[pos.x, pos.y].GetComponent<SpriteRenderer>().color = Gray;
 
-        squares[lastPos.x, lastPos.y].GetComponent<SpriteRenderer>().color = Blue;
+        squares[lastPos.x, lastPos.y].GetComponent<SpriteRenderer>().color = Gray;
 
         if (!hasShownCompletion && visited.Count >= 64)
         {
@@ -154,5 +157,5 @@ public class KnightTour : MonoBehaviour
     }
 
     Color DefaultColor => new Color(1, 1, 1, 0.15f);
-    Color Blue => new Color(0f, 0f, 1f, 1f);
+    Color Gray => new Color(0.5f, 0.5f, 0.5f, 1f);
 }
