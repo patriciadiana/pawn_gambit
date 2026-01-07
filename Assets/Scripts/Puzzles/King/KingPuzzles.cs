@@ -22,7 +22,7 @@ public class KingPuzzles : MonoBehaviour
     void Start()
     {
         SoundManager.Instance.PauseMusic();
-        SoundManager.PlayMusic(MusicType.KINGTHEME, 0.2f);
+        SoundManager.PlayMusic(MusicType.KINGTHEME);
 
         ChessGame.Instance.OnMoveCompleted += OnPieceMoved;
         ChessGame.Instance.puzzleMode = true;
@@ -66,6 +66,8 @@ public class KingPuzzles : MonoBehaviour
             if (timer <= 0f)
             {
                 TimerUI.Instance.Hide();
+
+                PuzzleManager.Instance.kingPuzzleCompleted = true;
 
                 PuzzleManager.Instance.FailPuzzle(
                     puzzleConfig.puzzleName,

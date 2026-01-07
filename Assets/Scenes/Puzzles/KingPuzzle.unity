@@ -474,8 +474,9 @@ MonoBehaviour:
     enemy king must have</color>
 
     <color=#4FC3F7>no escape</color><color=#EAEAEA>.</color>'
-  closeTime: 5
+  closeTime: 8
   skipKey: 32
+  displayed: 0
 --- !u!114 &1699987800
 MonoBehaviour:
   m_ObjectHideFlags: 0

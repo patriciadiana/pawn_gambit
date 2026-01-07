@@ -29,11 +29,11 @@ public class MovePlate : MonoBehaviour
 
         if (isAttackMove)
         {
-            SoundManager.PlaySound(SoundType.ATTACKPIECE, 1f);
+            SoundManager.PlaySound(SoundType.ATTACKPIECE);
         }
         else
         {
-            SoundManager.PlaySound(SoundType.MOVEPIECE, 1f);
+            SoundManager.PlaySound(SoundType.MOVEPIECE);
         }
 
         if (isAttackMove)
@@ -48,8 +48,8 @@ public class MovePlate : MonoBehaviour
                     if(targetPieceScript.name.Contains("white_queen"))
                     {
                         chessGame.SavePawnPosition(referencePiece);
-                        SceneManager.LoadScene("QueenPuzzle");
                         //SceneManager.LoadScene("KingPuzzle");
+                        SceneManager.LoadScene("QueenPuzzle");
                     }
                     else if (targetPieceScript.name.Contains("white_rook"))
                     {

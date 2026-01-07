@@ -19,7 +19,7 @@ public class KnightAI : MonoBehaviour
 
     IEnumerator AutoMoveRoutine()
     {
-        while (true)
+        while (targetPawn != null)
         {
             yield return new WaitForSeconds(moveInterval);
             MakeAIMove();
@@ -75,17 +75,15 @@ public class KnightAI : MonoBehaviour
     {
         ChessPiece p = GetComponent<ChessPiece>();
 
-        GameObject targetAtPos = game.GetPosition(pos.x, pos.y);
-        if (targetAtPos != null)
+        ChessPiece pawnScript = targetPawn != null ? targetPawn.GetComponent<ChessPiece>() : null;
+
+        if (pawnScript != null &&
+            pawnScript.xBoard == pos.x &&
+            pawnScript.yBoard == pos.y)
         {
-            if (targetAtPos == targetPawn)
-            {
-                Destroy(targetPawn);
-            }
-            else
-            {
-                return;
-            }
+            SoundManager.PlaySound(SoundType.ATTACKPIECE);
+            Destroy(targetPawn);
+            ChessGame.Instance.HandleGameOver();
         }
 
         game.SetPositionEmpty(p.xBoard, p.yBoard);
@@ -96,4 +94,5 @@ public class KnightAI : MonoBehaviour
 
         game.SetPosition(gameObject);
     }
+
 }

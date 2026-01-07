@@ -8,6 +8,7 @@ TagManager:
   - Crate
   - ChessPiece
   - EnemyKnight
+  - GameStateScreen
   layers:
   - Default
   - TransparentFX
@@ -44,6 +45,12 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Target
+    uniqueID: 1409724703
+    locked: 0
+  - name: Crate
+    uniqueID: 1972849465
     locked: 0
   m_RenderingLayers:
   - Default

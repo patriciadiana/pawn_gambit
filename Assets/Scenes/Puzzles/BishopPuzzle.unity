@@ -722,12 +722,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: 8855814827197089491, guid: b070aaee46f9d654681d8d1c98417b60, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.16, y: 0.17}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -743,7 +743,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1, y: 0.33, z: -1}
-  m_LocalScale: {x: 0.4441, y: 0.4441, z: 0.4441}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -783,7 +783,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Radius: 0.1
 --- !u!114 &1622295852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -923,9 +923,10 @@ MonoBehaviour:
     only</color> <color=#4FC3F7>diagonally</color><color=#EAEAEA>.</color>
 
     <color=#EAEAEA>Collect</color>
-    <color=#81C784>all circles</color><color=#EAEAEA>.</color>'
-  closeTime: 5
+    <color=#81C784>all pawns</color><color=#EAEAEA>.</color>'
+  closeTime: 8
   skipKey: 32
+  displayed: 0
 --- !u!1 &2061159824
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,7 +20,7 @@ public class QueensProblem : MonoBehaviour
     void Start()
     {
         SoundManager.Instance.PauseMusic();
-        SoundManager.PlayMusic(MusicType.QUEENTHEME, 0.2f);
+        SoundManager.PlayMusic(MusicType.QUEENTHEME);
 
         mainCamera = Camera.main;
         boardCollider = GetComponent<Collider2D>();
@@ -69,7 +69,7 @@ public class QueensProblem : MonoBehaviour
 
             if (existingPiece == null)
             {
-                SoundManager.PlaySound(SoundType.MOVEPIECE, 0.2f);
+                SoundManager.PlaySound(SoundType.MOVEPIECE);
                 ChessGame.Instance.SpawnChessPiece("white_queen", boardPos.x, boardPos.y);
             }
             else if (existingPiece != null && existingPiece.name.Contains("queen"))

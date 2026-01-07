@@ -2,6 +2,7 @@ using System.Diagnostics.Contracts;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class ChessPiece : MonoBehaviour
@@ -62,18 +63,13 @@ public class ChessPiece : MonoBehaviour
         GameObject controller = GameObject.FindGameObjectWithTag("GameController");
         ChessGame chessGameScript = controller.GetComponent<ChessGame>();
 
-        //// HARD BLOCKS — must come first
-        //if (chessGameScript.GameOver)
-        //    return;
-
-        //if (chessGameScript.IsAITurnInProgress)
-        //    return;
-
-        // Player is ALWAYS white in midgame mode
         if (chessGameScript.isMidgameMode && player != "white")
             return;
 
-        // Turn ownership check
+        if (!chessGameScript.isMidgameMode && player == "white" && GetPieceType() != 0
+            && SceneManager.GetActiveScene().name == "ChessGame")
+            return;
+
         if (player != chessGameScript.GetCurrentPlayer() && !ignorePuzzleRestriction)
             return;
 

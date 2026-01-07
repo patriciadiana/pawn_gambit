@@ -447,8 +447,9 @@ MonoBehaviour:
 
     <color=#4FC3F7>or
     diagonal</color><color=#EAEAEA>.</color>'
-  closeTime: 5
+  closeTime: 8
   skipKey: 32
+  displayed: 0
 --- !u!114 &658891320
 MonoBehaviour:
   m_ObjectHideFlags: 0
