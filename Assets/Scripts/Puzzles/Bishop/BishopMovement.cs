@@ -17,8 +17,10 @@ public class BishopMovement : MonoBehaviour
 
     private void Start()
     {
+        puzzleWon = false;
+
         SoundManager.Instance.PauseMusic();
-        SoundManager.PlayMusic(MusicType.BISHOPTHEME, 0.2f);
+        SoundManager.PlayMusic(MusicType.BISHOPTHEME);
 
         bishop = ChessGame.Instance.SpawnChessPiece("white_bishop", 2, 0);
         bishopScript = bishop.GetComponent<ChessPiece>();

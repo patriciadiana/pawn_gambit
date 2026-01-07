@@ -563,8 +563,9 @@ MonoBehaviour:
 
     <color=#EAEAEA>Cover</color>
     <color=#81C784>every square</color><color=#EAEAEA>.</color>'
-  closeTime: 5
+  closeTime: 8
   skipKey: 32
+  displayed: 0
 --- !u!1 &1314998108
 GameObject:
   m_ObjectHideFlags: 0

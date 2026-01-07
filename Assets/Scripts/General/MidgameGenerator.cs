@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -8,6 +10,9 @@ public class MidgameGenerator : MonoBehaviour
     public static MidgameGenerator Instance;
     private List<Vector2Int> white_pieces = new List<Vector2Int>();
     private List<Vector2Int> black_pieces = new List<Vector2Int>();
+
+    [SerializeField] private float timeLimit = 300f;
+    private Coroutine timerRoutine;
 
     void Awake()
     {
@@ -33,7 +38,47 @@ public class MidgameGenerator : MonoBehaviour
 
         ChessGame.Instance.puzzleMode = false;
         ChessGame.Instance.suppressCallback = false;
+
+        CheckKingAndStartTimer();
     }
+
+    void CheckKingAndStartTimer()
+    {
+        if (PuzzleManager.Instance == null) return;
+
+        bool hasKing = PuzzleManager.Instance.rewardPieces
+            .Exists(r => r.Equals("king", StringComparison.OrdinalIgnoreCase));
+
+        if (!hasKing)
+        {
+            if (timerRoutine != null)
+                StopCoroutine(timerRoutine);
+
+            timerRoutine = StartCoroutine(NoKingTimer());
+        }
+        else
+        {
+            TimerUI.Instance?.Hide();
+        }
+    }
+
+    IEnumerator NoKingTimer()
+    {
+        float timeLeft = timeLimit;
+
+        while (timeLeft > 0f)
+        {
+            TimerUI.Instance?.DisplayTime(timeLeft);
+            timeLeft -= Time.deltaTime;
+            yield return null;
+        }
+
+        TimerUI.Instance?.DisplayTime(0f);
+
+        ChessGame.Instance.HandleGameOver();
+    }
+
+
     void ClearBoard()
     {
         for (int x = 0; x < 8; x++)
@@ -79,7 +124,6 @@ public class MidgameGenerator : MonoBehaviour
                     SpawnPiece("white_queen", pos, occupied);
                     continue;
                 }
-                // 0-2 copies
                 else if (!reward.Equals("king", StringComparison.OrdinalIgnoreCase))
                 {
                     for (int i = 0; i < count; i++)

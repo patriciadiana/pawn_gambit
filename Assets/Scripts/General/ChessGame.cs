@@ -15,7 +15,7 @@ public class ChessGame : MonoBehaviour
     [SerializeField] public GameObject chessPiecePrefab;
 
     [Header("Game Over")]
-    [SerializeField] private GameOverScreen gameOver;
+    [SerializeField] private GameStateScreen gameState;
 
     private GameObject[,] boardPositions = new GameObject[8, 8];
     private GameObject[] blackPieces = new GameObject[16];
@@ -51,7 +51,42 @@ public class ChessGame : MonoBehaviour
         if (scene.name != "ChessGame")
             return;
 
-        SoundManager.Instance.ResumeMusic();
+        if (gameState != null)
+        {
+            if (SoundManager.Instance != null && gameState.gameOverClicked == true)
+            {
+                // Stop and restart to ensure it plays
+                SoundManager.Instance.GetComponent<AudioSource>().Stop();
+                SoundManager.PlayMusic(MusicType.BACKGROUNDMUSIC);
+            }
+            else if (SoundManager.Instance != null && gameState.gameOverClicked == false)
+            {
+                SoundManager.Instance.ResumeMusic();
+            }
+        }
+        else if (gameState == null)
+        {
+            GameObject goCanvas = GameObject.FindWithTag("GameStateScreen");
+            if (goCanvas != null)
+            {
+                gameState = goCanvas.GetComponent<GameStateScreen>();
+            }
+            else
+            {
+                Debug.LogError("No GameObject with tag 'GameStateScreen' found!");
+            }
+
+            if (SoundManager.Instance != null && gameState.gameOverClicked == true)
+            {
+                // Stop and restart to ensure it plays
+                SoundManager.Instance.GetComponent<AudioSource>().Stop();
+                SoundManager.PlayMusic(MusicType.BACKGROUNDMUSIC);
+            }
+            else if (SoundManager.Instance != null && gameState.gameOverClicked == false)
+            {
+                SoundManager.Instance.ResumeMusic();
+            }
+        }
 
         if (PuzzleManager.Instance != null &&
         PuzzleManager.Instance.kingPuzzleCompleted)
@@ -110,8 +145,11 @@ public class ChessGame : MonoBehaviour
 
     private void Start()
     {
+        white_pieces.Clear();
+        black_pieces.Clear();
         SpawnPieces();
     }
+
     public void SwitchTurn()
     {
         if (puzzleMode)
@@ -415,7 +453,39 @@ public class ChessGame : MonoBehaviour
 
     public void HandleGameOver()
     {
-        gameOver.Setup();
+        gameState.SetupGameOver();
+    }
+
+    public void HandleGameWon()
+    {
+        gameState.SetupGameWon();
+    }
+
+    public void ResetGame()
+    {
+        // Clear static lists FIRST
+        white_pieces.Clear();
+        black_pieces.Clear();
+
+        // Destroy all pieces in the scene
+        GameObject[] allPieces = GameObject.FindGameObjectsWithTag("ChessPiece");
+        foreach (GameObject piece in allPieces)
+            Destroy(piece);
+
+        // Reset arrays
+        whitePieces = new GameObject[16];
+        blackPieces = new GameObject[16];
+
+        // Reset board
+        for (int x = 0; x < 8; x++)
+            for (int y = 0; y < 8; y++)
+                boardPositions[x, y] = null;
+
+        // Reset state
+        currentPlayer = "white";
+        hasTransitionedToPuzzle = false;
+        puzzleMode = false;
+        suppressCallback = false;
     }
 
     public void SpawnRandomAIKnights(int count, GameObject pawnTarget)
@@ -443,8 +513,14 @@ public class ChessGame : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
 
+        while (ChessGame.Instance.GetPosition(x, y) != null)
+        {
+            yield return null;
+        }
+
         SpawnChessPiece(name, x, y);
     }
+
 
     public static bool IsKingInCheck(string piece_color)
     {

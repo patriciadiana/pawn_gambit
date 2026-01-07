@@ -50,16 +50,28 @@ public class StockfishTurnController : MonoBehaviour
             if(turn=="white")
             {
                 if (ChessGame.IsKingInCheck("white") == false)
+                {
                     Debug.Log("stalemate");
+                    ChessGame.Instance.HandleGameOver();
+                }
                 else
+                {
                     Debug.Log("black wins");
+                    ChessGame.Instance.HandleGameOver();
+                }
             }
             else
             {
                 if (ChessGame.IsKingInCheck("black") == false)
+                {
                     Debug.Log("stalemate");
+                    ChessGame.Instance.HandleGameWon();
+                }
                 else
+                {
                     Debug.Log("white wins");
+                    ChessGame.Instance.HandleGameWon();
+                }
             }
             return;
         }

@@ -55,5 +55,11 @@ public class PuzzleManager : MonoBehaviour
 
         SceneManager.LoadScene("ChessGame");
     }
+
+    public void ClearRewards()
+    {
+        rewardPieces.Clear();
+    }
+
 }
 

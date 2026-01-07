@@ -47,14 +47,16 @@ public class SoundManager : MonoBehaviour
     }
     private void Start()
     {
-        PlayMusic(MusicType.BACKGROUNDMUSIC, 0.1f);
+        PlayMusic(MusicType.BACKGROUNDMUSIC);
     }
 
-    public static void PlaySound(SoundType sound, float volume)
+    public static void PlaySound(SoundType sound)
     {
         if (Instance.soundList.Length > (int)sound)
         {
-            Instance.sfxSource.PlayOneShot(Instance.soundList[(int)sound], volume);
+            Instance.sfxSource.PlayOneShot(
+                Instance.soundList[(int)sound]
+            );
         }
         else
         {
@@ -62,18 +64,18 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public static void PlayMusic(MusicType music, float volume)
+    public static void PlayMusic(MusicType music)
     {
         if (Instance.musicList.Length > (int)music)
         {
             Instance.musicSource.clip = Instance.musicList[(int)music];
-            Instance.musicSource.volume = volume;
+            Instance.musicSource.volume = 1f;
             Instance.musicSource.loop = true;
             Instance.musicSource.Play();
         }
         else
         {
-            Debug.LogWarning("Music clip not found for index: " + music);
+            Debug.LogWarning("Music clip not found for: " + music);
         }
     }
 

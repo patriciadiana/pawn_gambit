@@ -10,27 +10,17 @@ public class MainMenu : MonoBehaviour
     public GameObject optionsMenu;
     public void PlayGame()
     {
+        //PuzzleManager.Instance.ClearRewards();
+        //PuzzlePiecesDisplay.Instance.ResetPieces();
+
+        //if (ChessGame.Instance != null)
+        //{
+        //    Destroy(ChessGame.Instance.gameObject);
+        //    ChessGame.Instance = null;
+        //}
+
         SceneManager.LoadScene("ChessGame");
-
-        //if (GameManager.Instance != null)
-        //{
-        //    string savedScene = GameManager.Instance.GetSceneName();
-
-        //    if (!string.IsNullOrEmpty(savedScene) && savedScene != "MainScene")
-        //    {
-        //        GameManager.Instance.LoadSavedScene();
-        //    }
-        //    else
-        //    {
-        //        SceneManager.LoadScene("MainScene");
-        //    }
-        //}
-        //else
-        //{
-        //    SceneManager.LoadScene("MainScene");
-        //}
     }
-
     public void QuitGame()
     {
         Debug.Log("Game is quitted");

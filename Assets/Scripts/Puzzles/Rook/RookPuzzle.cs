@@ -23,7 +23,7 @@ public class RookPuzzle : MonoBehaviour
     void Start()
     {
         SoundManager.Instance.PauseMusic();
-        SoundManager.PlayMusic(MusicType.ROOKTHEME, 0.2f);
+        SoundManager.PlayMusic(MusicType.ROOKTHEME);
 
         // Hide UI until HowTo is displayed
         cratesLeftText.gameObject.SetActive(false);

@@ -18,4 +18,4 @@ MonoBehaviour:
   nextPiecePosition: {x: 6, y: 2}
   rewardType: queen
   hasTimeLimit: 1
-  timeLimitinSeconds: 80
+  timeLimitinSeconds: 180
