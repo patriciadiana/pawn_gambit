@@ -18,4 +18,4 @@ MonoBehaviour:
   nextPiecePosition: {x: 0, y: 0}
   rewardType: king
   hasTimeLimit: 1
-  timeLimitinSeconds: 120
+  timeLimitinSeconds: 121

@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class KnightAI : MonoBehaviour
@@ -9,10 +10,16 @@ public class KnightAI : MonoBehaviour
     public float moveInterval = 5f;
     public GameObject targetPawn;
 
+    public GameObject knightAlert;
+    public float preMoveDisplayTime = 1.5f;
+
     private void Start()
     {
         piece = GetComponent<ChessPiece>();
         game = ChessGame.Instance;
+
+        if (knightAlert != null)
+            knightAlert.SetActive(false);
 
         StartCoroutine(AutoMoveRoutine());
     }
@@ -22,8 +29,28 @@ public class KnightAI : MonoBehaviour
         while (targetPawn != null)
         {
             yield return new WaitForSeconds(moveInterval);
+
+            yield return StartCoroutine(DisplayAlert(preMoveDisplayTime));
+
             MakeAIMove();
         }
+    }
+
+    IEnumerator DisplayAlert(float duration)
+    {
+        if (knightAlert == null) yield break;
+
+        knightAlert.SetActive(true);
+
+        Debug.Log("ar trebui sa apara");
+
+        //TextMeshProUGUI textComp = knightAlert.GetComponentInChildren<TextMeshProUGUI>();
+        //if (textComp != null)
+        //    textComp.text = "Knight is moving!";
+
+        yield return new WaitForSeconds(duration);
+
+        knightAlert.SetActive(false);
     }
 
     void MakeAIMove()

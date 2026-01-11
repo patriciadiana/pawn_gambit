@@ -48,7 +48,6 @@ public class MovePlate : MonoBehaviour
                     if(targetPieceScript.name.Contains("white_queen"))
                     {
                         chessGame.SavePawnPosition(referencePiece);
-                        //SceneManager.LoadScene("KingPuzzle");
                         SceneManager.LoadScene("QueenPuzzle");
                     }
                     else if (targetPieceScript.name.Contains("white_rook"))

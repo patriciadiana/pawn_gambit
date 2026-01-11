@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class MidgameGenerator : MonoBehaviour
@@ -11,8 +13,9 @@ public class MidgameGenerator : MonoBehaviour
     private List<Vector2Int> white_pieces = new List<Vector2Int>();
     private List<Vector2Int> black_pieces = new List<Vector2Int>();
 
-    [SerializeField] private float timeLimit = 300f;
     private Coroutine timerRoutine;
+    [SerializeField] private MidgameUIDisplay imageDisplay;
+    [SerializeField] private float timeLimit = 300f;
 
     void Awake()
     {
@@ -29,6 +32,13 @@ public class MidgameGenerator : MonoBehaviour
 
     public void GenerateMidgame()
     {
+        if (imageDisplay == null)
+        {
+            GameObject midgameUI = GameObject.FindWithTag("MidgameUIGenerator");
+            imageDisplay = midgameUI.GetComponent<MidgameUIDisplay>();
+        }
+        imageDisplay.Play();
+
         ClearBoard();
 
         HashSet<Vector2Int> occupied = new HashSet<Vector2Int>();

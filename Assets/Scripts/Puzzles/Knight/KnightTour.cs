@@ -23,7 +23,7 @@ public class KnightTour : MonoBehaviour
         SoundManager.Instance.PauseMusic();
         SoundManager.PlayMusic(MusicType.KNIGHTTHEME);
 
-        var knightObj = ChessGame.Instance.SpawnChessPiece("black_knight", 0, 0);
+        var knightObj = ChessGame.Instance.SpawnChessPiece("white_knight", 0, 0);
         knight = knightObj.GetComponent<ChessPiece>();
         knight.ignorePuzzleRestriction = true;
 
@@ -78,10 +78,7 @@ public class KnightTour : MonoBehaviour
         Vector2Int currentPos = new Vector2Int(knight.xBoard, knight.yBoard);
 
         if (currentPos == lastPos)
-            return; 
-
-        foreach (var p in GetLShapePath(lastPos, currentPos))
-            visited.Add(p);
+            return;
 
         visited.Add(currentPos);
 
@@ -90,32 +87,6 @@ public class KnightTour : MonoBehaviour
         UpdateColors();
     }
 
-    List<Vector2Int> GetLShapePath(Vector2Int from, Vector2Int to)
-    {
-        List<Vector2Int> path = new List<Vector2Int>();
-
-        int dx = to.x - from.x;
-        int dy = to.y - from.y;
-
-        int stepX = dx == 0 ? 0 : (dx > 0 ? 1 : -1);
-        int stepY = dy == 0 ? 0 : (dy > 0 ? 1 : -1);
-
-        if (Mathf.Abs(dx) == 2 && Mathf.Abs(dy) == 1)
-        {
-            path.Add(new Vector2Int(from.x + stepX, from.y));
-            path.Add(new Vector2Int(from.x + 2 * stepX, from.y));
-            path.Add(new Vector2Int(from.x + 2 * stepX, from.y + stepY));
-        }
-
-        else if (Mathf.Abs(dx) == 1 && Mathf.Abs(dy) == 2)
-        {
-            path.Add(new Vector2Int(from.x, from.y + stepY));
-            path.Add(new Vector2Int(from.x, from.y + 2 * stepY));
-            path.Add(new Vector2Int(from.x + stepX, from.y + 2 * stepY));
-        }
-
-        return path;
-    }
     void CreateBoardSquares()
     {
         for (int x = 0; x < 8; x++)

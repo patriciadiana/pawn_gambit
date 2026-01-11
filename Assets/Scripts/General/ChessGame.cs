@@ -36,6 +36,8 @@ public class ChessGame : MonoBehaviour
     private Vector2Int nextPiecePosition;
     private Vector2Int savedPawnPosition;
 
+    [SerializeField] public GameObject knightAlertUI;
+
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -145,6 +147,7 @@ public class ChessGame : MonoBehaviour
 
     private void Start()
     {
+        knightAlertUI.SetActive(false);
         white_pieces.Clear();
         black_pieces.Clear();
         SpawnPieces();
@@ -447,6 +450,12 @@ public class ChessGame : MonoBehaviour
         GameObject knight = SpawnChessPiece("black_knight", x, y);
         KnightAI ai = knight.AddComponent<KnightAI>();
         ai.targetPawn = pawnTarget;
+
+        if (knightAlertUI != null)
+        {
+            ai.knightAlert = knightAlertUI;
+        }
+
         knight.tag = "EnemyKnight";
         return knight;
     }

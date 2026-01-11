@@ -9,6 +9,7 @@ TagManager:
   - ChessPiece
   - EnemyKnight
   - GameStateScreen
+  - MidgameUIGenerator
   layers:
   - Default
   - TransparentFX

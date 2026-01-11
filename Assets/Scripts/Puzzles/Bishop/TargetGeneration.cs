@@ -4,7 +4,7 @@ public class TargetGeneration : MonoBehaviour
 {
     [Header("Target Settings")]
     [SerializeField] private GameObject targetPrefab;
-    [SerializeField, Range(1, 16)] private int numberOfTargets = 5;
+    [SerializeField, Range(1, 16)] private int numberOfTargets = 10;
     [SerializeField] private float zOffset = -1f;
 
     public int spawnedTargets { get; private set; }
@@ -31,15 +31,19 @@ public class TargetGeneration : MonoBehaviour
             int x = Random.Range(0, BoardConfig.BoardWidth);
             int y = Random.Range(0, BoardConfig.BoardHeight);
 
-            if ((x + y) % 2 == 0)
-            {
-                Vector2Int gridPos = new Vector2Int(x, y);
-                Vector3 worldPos = BoardConfig.GridToWorld(gridPos);
-                worldPos.z = zOffset;
+            bool preferWhite = Random.value < 0.6f;
+            if (preferWhite && (x + y) % 2 != 0)
+                continue;
+            if (!preferWhite && (x + y) % 2 == 0)
+                continue;
 
-                Instantiate(targetPrefab, worldPos, Quaternion.identity);
-                spawnedTargets++;  
-            }
+            Vector2Int gridPos = new Vector2Int(x, y);
+            Vector3 worldPos = BoardConfig.GridToWorld(gridPos);
+            worldPos.z = zOffset;
+
+            Instantiate(targetPrefab, worldPos, Quaternion.identity);
+            spawnedTargets++;
         }
     }
+
 }

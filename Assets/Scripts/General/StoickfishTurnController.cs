@@ -1,14 +1,16 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class StockfishTurnController : MonoBehaviour
 {
+    [SerializeField] private TextMeshProUGUI checkText;
     private ChessGame chessGame;
-
     void Start()
     {
         chessGame = ChessGame.Instance;
         chessGame.OnMoveCompleted += OnMoveCompleted;
+        checkText.gameObject.SetActive(false);
     }
 
     void OnDestroy()
@@ -27,6 +29,7 @@ public class StockfishTurnController : MonoBehaviour
         if (chessGame.GetCurrentPlayer() == "black")
         {
             Debug.Log($"did white put black in check ? {ChessGame.IsKingInCheck("black")}");
+            UpdateCheckText();
             StartCoroutine(HandleStockfishTurn("black"));
         }
     }
@@ -42,6 +45,30 @@ public class StockfishTurnController : MonoBehaviour
             turn
         );
     }
+
+    private void UpdateCheckText()
+    {
+        string currentPlayer = chessGame.GetCurrentPlayer();
+        bool isInCheck = ChessGame.IsKingInCheck(currentPlayer);
+
+        if (!isInCheck)
+        {
+            checkText.gameObject.SetActive(false);
+            return;
+        }
+
+        checkText.gameObject.SetActive(true);
+
+        if (currentPlayer == "white")
+        {
+            checkText.text = "<color=#FF0000>You're in check! Move the king!</color>";
+        }
+        else
+        {
+            checkText.text = "Opponent is in check!";
+        }
+    }
+
 
     private void ExecuteStockfishMove(string uci, string turn)
     {
@@ -103,7 +130,9 @@ public class StockfishTurnController : MonoBehaviour
         chessGame.SetPosition(pieceObj);
 
         Debug.Log($"did black put white in check ? {ChessGame.IsKingInCheck("white")}");
-        
+
+        UpdateCheckText();
+
         StartCoroutine(HandleStockfishTurn("white"));
     }
 
