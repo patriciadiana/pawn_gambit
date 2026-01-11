@@ -14,12 +14,12 @@ public class BishopTarget : MonoBehaviour
 
     private void Start()
     {
+        captured = 0;
         targetsLeftText.gameObject.SetActive(false);
     }
 
     private void Update()
     {
-        // Show UI only after HowToDisplay is done
         if (HowToDisplay.hasBeenDisplayed && !uiShown)
         {
             uiShown = true;

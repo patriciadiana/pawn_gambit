@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using TMPro;
 
 public class RookPuzzle : MonoBehaviour
@@ -19,21 +18,27 @@ public class RookPuzzle : MonoBehaviour
 
     private Vector3 playerStartPos;
     private Vector3[] crateStartPositions;
+    private Vector3[] goalStartPositions;
+
+    public Sprite goalEmptySprite;
+    public Sprite goalFilledSprite;
 
     void Start()
     {
         SoundManager.Instance.PauseMusic();
         SoundManager.PlayMusic(MusicType.ROOKTHEME);
 
-        // Hide UI until HowTo is displayed
         cratesLeftText.gameObject.SetActive(false);
 
         playerStartPos = player.position;
+
         crateStartPositions = new Vector3[crates.Length];
         for (int i = 0; i < crates.Length; i++)
-        {
             crateStartPositions[i] = crates[i].position;
-        }
+
+        goalStartPositions = new Vector3[goals.Length];
+        for (int i = 0; i < goals.Length; i++)
+            goalStartPositions[i] = goals[i].position;
 
         if (puzzleConfig.hasTimeLimit)
             timer = puzzleConfig.timeLimitinSeconds;
@@ -41,7 +46,6 @@ public class RookPuzzle : MonoBehaviour
 
     void Update()
     {
-        // Show UI only after HowToDisplay is done
         if (HowToDisplay.hasBeenDisplayed && !cratesLeftText.gameObject.activeSelf)
         {
             cratesLeftText.gameObject.SetActive(true);
@@ -133,17 +137,23 @@ public class RookPuzzle : MonoBehaviour
         return null;
     }
 
+    Transform GetCrateOnGoal(Vector2Int goalGrid)
+    {
+        foreach (var c in crates)
+        {
+            if (BoardConfig.WorldToGrid(c.position) == goalGrid)
+                return c;
+        }
+        return null;
+    }
+
     void CheckWin()
     {
-        HashSet<Vector2Int> cratePositions = new HashSet<Vector2Int>();
         int correct = 0;
-
-        foreach (var c in crates)
-            cratePositions.Add(BoardConfig.WorldToGrid(c.position));
 
         foreach (var g in goals)
         {
-            if (cratePositions.Contains(BoardConfig.WorldToGrid(g.position)))
+            if (GetCrateOnGoal(BoardConfig.WorldToGrid(g.position)) != null)
                 correct++;
         }
 
@@ -167,6 +177,19 @@ public class RookPuzzle : MonoBehaviour
         for (int i = 0; i < crates.Length; i++)
         {
             crates[i].position = crateStartPositions[i];
+
+            SpriteRenderer crateSR = crates[i].GetComponent<SpriteRenderer>();
+            if (crateSR != null)
+                crateSR.enabled = true;
+        }
+
+        for (int i = 0; i < goals.Length; i++)
+        {
+            goals[i].position = goalStartPositions[i];
+
+            SpriteRenderer sr = goals[i].GetComponent<SpriteRenderer>();
+            if (sr != null && goalEmptySprite != null)
+                sr.sprite = goalEmptySprite;
         }
 
         UpdateUIText();
@@ -177,16 +200,48 @@ public class RookPuzzle : MonoBehaviour
         if (!HowToDisplay.hasBeenDisplayed)
             return;
 
-        int placed = 0;
-        HashSet<Vector2Int> cratePositions = new HashSet<Vector2Int>();
-
+        // 1️⃣ Always re-enable all crates first
         foreach (var c in crates)
-            cratePositions.Add(BoardConfig.WorldToGrid(c.position));
-
-        foreach (var g in goals)
         {
-            if (cratePositions.Contains(BoardConfig.WorldToGrid(g.position)))
+            SpriteRenderer sr = c.GetComponent<SpriteRenderer>();
+            if (sr != null)
+                sr.enabled = true;
+        }
+
+        int placed = 0;
+
+        // 2️⃣ Handle goals
+        for (int i = 0; i < goals.Length; i++)
+        {
+            Transform g = goals[i];
+            Vector2Int goalGrid = BoardConfig.WorldToGrid(g.position);
+            SpriteRenderer goalSR = g.GetComponent<SpriteRenderer>();
+            Transform crate = GetCrateOnGoal(goalGrid);
+
+            if (crate != null)
+            {
                 placed++;
+
+                // Hide crate while on goal
+                SpriteRenderer crateSR = crate.GetComponent<SpriteRenderer>();
+                if (crateSR != null)
+                    crateSR.enabled = false;
+
+                // Swap goal sprite
+                if (goalSR != null && goalFilledSprite != null)
+                    goalSR.sprite = goalFilledSprite;
+
+                // Apply Y offset ONCE
+                g.position = goalStartPositions[i] + Vector3.up * 0.2f;
+            }
+            else
+            {
+                // Restore goal
+                if (goalSR != null && goalEmptySprite != null)
+                    goalSR.sprite = goalEmptySprite;
+
+                g.position = goalStartPositions[i];
+            }
         }
 
         int remaining = goals.Length - placed;

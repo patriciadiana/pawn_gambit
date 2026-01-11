@@ -17,17 +17,39 @@ public class ChessPiece : MonoBehaviour
     [SerializeField] public Sprite black_queen, black_knight, black_bishop, black_king, black_rook, black_pawn;
     [SerializeField] public Sprite white_queen, white_knight, white_bishop, white_king, white_rook, white_pawn;
 
+    private Animator animator;
+
     public int xBoard { get; private set; }
     public int yBoard { get; private set; }
     public string player { get; private set; }
 
     public Vector2Int lastPosition;
 
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
+
     public void Activate()
     {
         controller = GameObject.FindGameObjectWithTag("GameController");
         SetCoords();
         AssignSprite(this.name);
+        SetupAnimator();
+    }
+
+    float isWhiteValue;
+
+    private void SetupAnimator()
+    {
+        if (animator == null)
+        {
+            Debug.LogError("Animator missing on ChessPiece!", this);
+            return;
+        }
+
+        animator.SetFloat("PieceType", GetPieceType());
+        animator.SetFloat("IsWhite", player == "white" ? 1f : 0f);
     }
 
     private void AssignSprite(string name)
@@ -302,16 +324,16 @@ public class ChessPiece : MonoBehaviour
         return player;
     }
 
-    public int GetPieceType()
+    public float GetPieceType()
     {
         string pieceName = this.name.ToLower();
-        if (pieceName.Contains("pawn")) return 0;
-        if (pieceName.Contains("knight")) return 1;
-        if (pieceName.Contains("bishop")) return 2;
-        if (pieceName.Contains("rook")) return 3;
-        if (pieceName.Contains("queen")) return 4;
-        if (pieceName.Contains("king")) return 5;
-        return -1;
+        if (pieceName.Contains("pawn")) return 0f;
+        if (pieceName.Contains("knight")) return 1f;
+        if (pieceName.Contains("bishop")) return 2f;
+        if (pieceName.Contains("rook")) return 3f;
+        if (pieceName.Contains("queen")) return 4f;
+        if (pieceName.Contains("king")) return 5f;
+        return -1f;
     }
 
     public void SetXBoard(int x)
