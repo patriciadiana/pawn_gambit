@@ -1,5 +1,4 @@
 using System.Collections;
-using TMPro;
 using UnityEngine;
 
 public class KnightAI : MonoBehaviour
@@ -13,6 +12,8 @@ public class KnightAI : MonoBehaviour
     public GameObject knightAlert;
     public float preMoveDisplayTime = 1.5f;
 
+    private Coroutine aiRoutine;
+
     private void Start()
     {
         piece = GetComponent<ChessPiece>();
@@ -21,7 +22,31 @@ public class KnightAI : MonoBehaviour
         if (knightAlert != null)
             knightAlert.SetActive(false);
 
-        StartCoroutine(AutoMoveRoutine());
+        aiRoutine = StartCoroutine(AutoMoveRoutine());
+    }
+
+    private void OnDisable()
+    {
+        Cleanup();
+    }
+
+    private void OnDestroy()
+    {
+        Cleanup();
+    }
+
+    void Cleanup()
+    {
+        if (aiRoutine != null)
+        {
+            StopCoroutine(aiRoutine);
+            aiRoutine = null;
+        }
+
+        StopAllCoroutines();
+
+        if (knightAlert != null)
+            knightAlert.SetActive(false);
     }
 
     IEnumerator AutoMoveRoutine()
@@ -38,15 +63,10 @@ public class KnightAI : MonoBehaviour
 
     IEnumerator DisplayAlert(float duration)
     {
-        if (knightAlert == null) yield break;
+        if (knightAlert == null)
+            yield break;
 
         knightAlert.SetActive(true);
-
-        Debug.Log("ar trebui sa apara");
-
-        //TextMeshProUGUI textComp = knightAlert.GetComponentInChildren<TextMeshProUGUI>();
-        //if (textComp != null)
-        //    textComp.text = "Knight is moving!";
 
         yield return new WaitForSeconds(duration);
 
@@ -102,7 +122,9 @@ public class KnightAI : MonoBehaviour
     {
         ChessPiece p = GetComponent<ChessPiece>();
 
-        ChessPiece pawnScript = targetPawn != null ? targetPawn.GetComponent<ChessPiece>() : null;
+        ChessPiece pawnScript = targetPawn != null
+            ? targetPawn.GetComponent<ChessPiece>()
+            : null;
 
         if (pawnScript != null &&
             pawnScript.xBoard == pos.x &&
@@ -121,5 +143,4 @@ public class KnightAI : MonoBehaviour
 
         game.SetPosition(gameObject);
     }
-
 }

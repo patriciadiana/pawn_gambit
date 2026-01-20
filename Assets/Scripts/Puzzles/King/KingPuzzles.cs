@@ -25,7 +25,9 @@ public class KingPuzzles : MonoBehaviour
         SoundManager.PlayMusic(MusicType.KINGTHEME);
 
         ChessGame.Instance.OnMoveCompleted += OnPieceMoved;
-        ChessGame.Instance.puzzleMode = true;
+        ChessGame.Instance.puzzleMode = false;
+
+        PuzzleManager.Instance.kingPuzzleActive = true;
 
         if (puzzleConfig.hasTimeLimit)
         {
@@ -45,6 +47,7 @@ public class KingPuzzles : MonoBehaviour
             puzzleCompleted = true;
 
             PuzzleManager.Instance.kingPuzzleCompleted = true;
+            PuzzleManager.Instance.kingPuzzleActive = false;
 
             PuzzlePiecesDisplay.Instance.UnlockPiece("king");
 
@@ -68,6 +71,7 @@ public class KingPuzzles : MonoBehaviour
                 TimerUI.Instance.Hide();
 
                 PuzzleManager.Instance.kingPuzzleCompleted = true;
+                PuzzleManager.Instance.kingPuzzleActive = false;
 
                 PuzzleManager.Instance.FailPuzzle(
                     puzzleConfig.puzzleName,

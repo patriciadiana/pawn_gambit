@@ -661,10 +661,10 @@ MonoBehaviour:
   puzzleInstructions: '<color=#EAEAEA>Move using</color> <color=#81C784>W A S D</color><color=#EAEAEA>.</color>
 
     <color=#EAEAEA>Push
-    the</color> <color=#FFD700>crates</color>
+    the</color> <color=#FFD700>stone column halves</color>
 
-    <color=#EAEAEA>onto the</color>
-    <color=#4FC3F7>marked spots</color><color=#EAEAEA>.</color>
+    <color=#EAEAEA>to</color>
+    <color=#4FC3F7>connect them together</color><color=#EAEAEA>.</color>
 
     <color=#EAEAEA>If
     you make a mistake, press</color> <color=#EF5350>R</color> <color=#EAEAEA>to
@@ -2190,10 +2190,10 @@ MonoBehaviour:
   m_text: '<color=#EAEAEA>Move using</color> <color=#81C784>W A S D</color><color=#EAEAEA>.</color>
 
     <color=#EAEAEA>Push
-    the</color> <color=#FFD700>crates</color>
+    the</color> <color=#FFD700>stone column halves</color>
 
-    <color=#EAEAEA>onto the</color>
-    <color=#4FC3F7>marked spots</color><color=#EAEAEA>.</color>
+    <color=#EAEAEA>to</color>
+    <color=#4FC3F7>connect them together</color><color=#EAEAEA>.</color>
 
     <color=#EAEAEA>If
     you make a mistake, press</color> <color=#EF5350>R</color> <color=#EAEAEA>to

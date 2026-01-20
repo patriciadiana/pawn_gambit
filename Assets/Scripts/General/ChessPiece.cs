@@ -286,7 +286,6 @@ public class ChessPiece : MonoBehaviour
 
         ChessPiece targetPiece = target.GetComponent<ChessPiece>();
 
-        // Pawn attack rule
         if (!game.isMidgameMode || targetPiece.player != player)
         {
             MovePlateAttackSpawn(x, y);
@@ -310,13 +309,16 @@ public class ChessPiece : MonoBehaviour
 
     public void MovePlateAttackSpawn(int matrixX, int matrixY)
     {
-        Vector3 worldPos = BoardConfig.GridToWorld(new Vector2Int(matrixX, matrixY));
-        GameObject movePlate = Instantiate(movePlatePrefab, new Vector3(worldPos.x, worldPos.y, -3.0f), Quaternion.identity);
+        if (PuzzleManager.Instance.kingPuzzleActive == false)
+        {
+            Vector3 worldPos = BoardConfig.GridToWorld(new Vector2Int(matrixX, matrixY));
+            GameObject movePlate = Instantiate(movePlatePrefab, new Vector3(worldPos.x, worldPos.y, -3.0f), Quaternion.identity);
 
-        MovePlate movePlateScript = movePlate.GetComponent<MovePlate>();
-        movePlateScript.isAttackMove = true;
-        movePlateScript.SetReference(gameObject);
-        movePlateScript.SetCoords(matrixX, matrixY);
+            MovePlate movePlateScript = movePlate.GetComponent<MovePlate>();
+            movePlateScript.isAttackMove = true;
+            movePlateScript.SetReference(gameObject);
+            movePlateScript.SetCoords(matrixX, matrixY);
+        }
     }
 
     public string GetPlayer()

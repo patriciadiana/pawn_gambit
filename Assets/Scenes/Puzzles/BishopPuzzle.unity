@@ -352,8 +352,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 21, y: 149}
-  m_SizeDelta: {x: 506.9895, y: 330.1323}
+  m_AnchoredPosition: {x: 7, y: 149}
+  m_SizeDelta: {x: 568.0374, y: 330.1323}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &692641544
 MonoBehaviour:
@@ -383,9 +383,9 @@ MonoBehaviour:
     <color=#EAEAEA>Collect</color>
     <color=#81C784>all pawns</color><color=#EAEAEA>.</color>
 
-    <color=#EAEAEA>Flip
-    the</color> <color=#FFD700>Bishop</color><color=#EAEAEA> if needed,</color> <color=#FF8A65>but
-    it will be irreversible</color><color=#EAEAEA>.</color>'
+    <color=#EAEAEA>Collect
+    the</color> <color=#FFD700>potion</color><color=#EAEAEA> if needed,</color> <color=#FF8A65>it
+    will alter the Bishop''s color forever</color><color=#EAEAEA>.</color>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f9fc1b21d1ddffc49beed4841a16cc1f, type: 2}
   m_sharedMaterial: {fileID: -6325027932780386333, guid: f9fc1b21d1ddffc49beed4841a16cc1f, type: 2}
@@ -1037,7 +1037,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1719554666
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1144,9 +1144,9 @@ MonoBehaviour:
     <color=#EAEAEA>Collect</color>
     <color=#81C784>all pawns</color><color=#EAEAEA>.</color>
 
-    <color=#EAEAEA>Flip
-    the</color> <color=#FFD700>Bishop</color><color=#EAEAEA> if needed,</color> <color=#FF8A65>but
-    this is irreversible</color><color=#EAEAEA>.</color>'
+    <color=#EAEAEA>Collect
+    the</color> <color=#FFD700>potion</color><color=#EAEAEA> if needed,</color> <color=#FF8A65>it
+    will alter the Bishop''s color forever</color><color=#EAEAEA>.</color>'
   closeTime: 8
   skipKey: 32
   displayed: 0
@@ -1167,7 +1167,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2061159825
 RectTransform:
   m_ObjectHideFlags: 0

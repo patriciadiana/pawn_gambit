@@ -89,7 +89,7 @@ public class MovePlate : MonoBehaviour
         {
             chessGame.TransitionToPuzzleMode(movedPiece.gameObject);
         }
-        else if(chessGame.isMidgameMode == false)
+        else if(chessGame.isMidgameMode == false && PuzzleManager.Instance.kingPuzzleActive == false)
         {
             chessGame.SwitchTurn();
         }

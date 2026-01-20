@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -98,7 +99,11 @@ public class ChessGame : MonoBehaviour
             ChessGame.Instance.ResetForMidgame();
             MidgameGenerator.Instance.GenerateMidgame();
 
-            string stockfishPath = Application.dataPath + "/StreamingAssets/stockfish/stockfish-windows-x86-64-avx2.exe";
+            string stockfishPath = Path.Combine(
+                Application.streamingAssetsPath,
+                "stockfish/stockfish-windows-x86-64-avx2.exe"
+            );
+
             StockfishManager.Instance.StartEngine(stockfishPath);
         }
 
