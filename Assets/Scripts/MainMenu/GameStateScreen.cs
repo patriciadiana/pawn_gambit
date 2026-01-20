@@ -8,22 +8,38 @@ public class GameStateScreen : MonoBehaviour
     public GameObject gameOver;
     public GameObject gameWon;
     public bool gameOverClicked = false;
+    public float displayDelay = 2f;
 
     public void SetupGameOver()
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        Time.timeScale = 0f;
-        gameOver.SetActive(true);
-
-        gameOverClicked = false;
+        StartCoroutine(ShowGameOverDelayed());
     }
 
     public void SetupGameWon()
     {
+        StartCoroutine(ShowGameWonDelayed());
+    }
+
+    IEnumerator ShowGameOverDelayed()
+    {
+        yield return new WaitForSecondsRealtime(displayDelay);
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Time.timeScale = 0f;
+
+        gameOver.SetActive(true);
+        gameOverClicked = false;
+    }
+
+    IEnumerator ShowGameWonDelayed()
+    {
+        yield return new WaitForSecondsRealtime(displayDelay);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Time.timeScale = 0f;
+
         gameWon.SetActive(true);
     }
 
@@ -35,8 +51,6 @@ public class GameStateScreen : MonoBehaviour
 
     public void RestartButton()
     {
-        Debug.Log("Restart clicked");
-
         gameOverClicked = true;
 
         PuzzleManager.Instance.ClearRewards();

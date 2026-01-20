@@ -6,18 +6,24 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     public static MainMenu Instance;
+    public static bool MenuLoadedFromGame = false;
 
     public GameObject optionsMenu;
     public void PlayGame()
     {
-        //PuzzleManager.Instance.ClearRewards();
-        //PuzzlePiecesDisplay.Instance.ResetPieces();
+        if (MenuLoadedFromGame)
+        {
+            PuzzleManager.Instance.ClearRewards();
+            PuzzlePiecesDisplay.Instance.ResetPieces();
 
-        //if (ChessGame.Instance != null)
-        //{
-        //    Destroy(ChessGame.Instance.gameObject);
-        //    ChessGame.Instance = null;
-        //}
+            if (ChessGame.Instance != null)
+            {
+                Destroy(ChessGame.Instance.gameObject);
+                ChessGame.Instance = null;
+            }
+
+            MenuLoadedFromGame = false;
+        }
 
         SceneManager.LoadScene("ChessGame");
     }

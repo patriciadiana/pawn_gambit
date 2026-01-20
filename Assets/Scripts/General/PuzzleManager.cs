@@ -10,6 +10,7 @@ public class PuzzleManager : MonoBehaviour
     public List<string> rewardPieces = new();
 
     public bool kingPuzzleCompleted = false;
+    public bool kingPuzzleActive = false;
 
     void Awake()
     {
@@ -38,7 +39,6 @@ public class PuzzleManager : MonoBehaviour
         }
 
         string rewardsList = string.Join(", ", rewardPieces);
-        Debug.Log($"Puzzle Completed! Rewards: {rewardsList}</color>");
 
         SceneManager.LoadScene("ChessGame");
     }
@@ -46,7 +46,6 @@ public class PuzzleManager : MonoBehaviour
     public void FailPuzzle(string name, string nextPiece, Vector2Int pos)
     {
         string rewardsList = string.Join(", ", rewardPieces);
-        Debug.Log($"Puzzle Completed! Rewards: {rewardsList}</color>");
 
         if (!string.IsNullOrEmpty(nextPiece) && kingPuzzleCompleted == false)
         {

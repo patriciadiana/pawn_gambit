@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TargetGeneration : MonoBehaviour
@@ -21,6 +22,8 @@ public class TargetGeneration : MonoBehaviour
 
         spawnedTargets = 0;
 
+        HashSet<Vector2Int> occupied = new HashSet<Vector2Int>();
+
         int attempts = 0;
         int maxAttempts = 500;
 
@@ -38,12 +41,19 @@ public class TargetGeneration : MonoBehaviour
                 continue;
 
             Vector2Int gridPos = new Vector2Int(x, y);
+
+            if (occupied.Contains(gridPos))
+                continue;
+
             Vector3 worldPos = BoardConfig.GridToWorld(gridPos);
             worldPos.z = zOffset;
 
             Instantiate(targetPrefab, worldPos, Quaternion.identity);
+
+            occupied.Add(gridPos);
             spawnedTargets++;
         }
     }
+
 
 }
